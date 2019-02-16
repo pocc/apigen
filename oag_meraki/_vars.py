@@ -34,8 +34,8 @@ PATH_PRIMITIVES = {
         'schema': {},
         'required': True
     },
-    'staticRouteId': {
-        'name': 'staticRouteId',
+    'srId': {
+        'name': 'srId',
         'description': 'UUID of static route' 
             '\n ↳ get_static_routes_by_network_id(network_id)',
         'example': 'd7fa4948-7921-4dfa-af6b-ae8b16c20c39',
@@ -107,8 +107,8 @@ PATH_PRIMITIVES = {
         },
         'required': True
     },
-    'idOrMacOrIp': {
-        'name': 'idOrMacOrIp',
+    'clientIdOrMacOrIp': {
+        'name': 'clientIdOrMacOrIp',
         'description': 'Client ID or Mac or IP\n ↳ (multiple)',
         'example': '00:11:22:33:44:55',
         'schema': {
@@ -317,11 +317,20 @@ PATH_PRIMITIVES = {
             'type': 'string'
         },
         'required': True
+    },
+    'groupPolicyId': {
+        'name': 'groupPolicyId',
+        'description': 'Id that uniquely identifies a group policy'
+                       '\n ↳ poke me',
+        'example': 'poke me',
+        'schema': {
+            'type': 'string'
+        },
+        'required': True
     }
 }
 
-OPENAPI_START = """\
-{
+OPENAPI_STUB = {
   "openapi": "3.0.0",
   "info": {
     "description": "Meraki API",
@@ -348,17 +357,6 @@ OPENAPI_START = """\
       }
     }
   ],
-  "paths":"""
-
-OPENAPI_END = """\
-    "securitySchemes": {
-      "ApiKeyAuth": {
-        "type": "apiKey",
-        "in": "header",
-        "name": "X-Cisco-Meraki-API-Key"
-      }
-    }
-  },
   "security": [
     {
       "ApiKeyAuth": []
@@ -368,4 +366,12 @@ OPENAPI_END = """\
     "description": "Find out more about Meraki API docs",
     "url": "http://dashboard.meraki.com/api_docs"
   }
-}"""
+}
+
+SECURITY_SCHEMES = {
+      "ApiKeyAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-Cisco-Meraki-API-Key"
+      }
+    }

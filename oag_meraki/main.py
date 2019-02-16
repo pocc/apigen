@@ -2,10 +2,9 @@
 """Main function."""
 import subprocess as sp
 import re
-import urllib.error as urlerr
-import urllib.request as urlreq
 
-import merakygen._cli as cli
+import apigen._cli as cli
+import apigen.make_api_client as api_client
 
 
 def main():
@@ -20,8 +19,8 @@ def main():
         raise SyntaxWarning(err_msg)
 
     generate_openapi_json()
-    get_openapi_generator()
-    generate_api_clients(user_langs)
+    api_client.get_openapi_generator()
+    api_client.generate_api_clients(user_langs)
 
 
 def check_requirements():
@@ -58,16 +57,6 @@ def get_java_version():
     return float(version)
 
 
-def get_openapi_generator():
-    """Get OpenAPI Generator and execute per language."""
-    try:
-        jarfile = 'http://central.maven.org/maven2/org/openapitools/open' \
-                  'api-generator-cli/3.3.4/openapi-generator-cli-3.3.4.jar'
-        urlreq.urlretrieve(jarfile, 'openapi-generator-cli.jar')
-    except urlerr.URLError:
-        raise ConnectionError("An internet connection is required.")
-
-
 def get_languages():
     """Get the languages that OpenAPI Generator supports.
 
@@ -79,16 +68,6 @@ def get_languages():
     languages_list = languages_str[1:-1].split(', ')  # Remove '[', ']'
 
     return languages_list
-
-
-def generate_api_clients(*args):
-    """Generate all of the API clients the user has specified."""
-    for lang in args:
-        cmd_list = ['java', '-jar', 'openapi-generator-cli.jar', 'generate',
-                    '-i', 'merakiapi.json',
-                    '-l', lang,
-                    '-o', 'generated/' + lang]
-        result = sp.check_output(cmd_list)
 
 
 if __name__ == '__main__':

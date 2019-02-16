@@ -1,3 +1,4 @@
 .idea/
 __pycache__
 openapi-generator-cli.jar
+meraki_api.json

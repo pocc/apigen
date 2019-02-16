@@ -42,7 +42,7 @@ def fetch_apidocs_json():
     try:
         # If a local copy has been created in the last 24 hours, use it.
         if os.path.exists(api_json_name) and \
-                time.time() - os.stat(api_json_name).st_mtime > 86400:
+                time.time() - os.stat(api_json_name).st_mtime < 86400:
             api_docs = get_json_str_from_file(api_json_name)
         else:
             text = get_apidocs_webpage(docs_url)
