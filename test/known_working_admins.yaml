@@ -1,0 +1,202 @@
+openapi: 3.0.0
+info:
+  description: Meraki API
+  version: '0'
+  title: Meraki API
+  termsOfService: 'https://meraki.cisco.com/support/#policies:eca'
+  contact:
+    email: rossbjacobs@gmail.com
+  license:
+    name: Apache 2.0
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+tags: []
+servers:
+  - url: 'http://api.meraki.com/api/{basePath}'
+    variables:
+      basePath:
+        default: v0
+        description: Current version of the API
+paths:
+  '/organizations/{organizationId}/admins':
+    get:
+      tags:
+        - organizations
+      summary: Get organization data
+      description: ''
+      operationId: getOrganizationsAdmins
+      parameters:
+        - name: organizationId
+          in: path
+          description: ID of organization
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Success
+        '400':
+          description: Bad inputs
+        '404':
+          description: Resource not found
+    post:
+      tags:
+        - organizations
+      summary: Get organization data
+      description: ''
+      operationId: postOrganizationsAdmins
+      parameters:
+        - name: organizationId
+          in: path
+          description: ID of organization
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: Admin to add to the organization
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Admin'
+      responses:
+        '201':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Admin'
+        '400':
+          description: Bad inputs
+        '404':
+          description: Resource not found
+  '/organizations/{organizationId}/admins/{adminId}':
+    put:
+      tags:
+        - organizations
+      summary: Get organization data
+      description: ''
+      operationId: putOrganizationsAdmins
+      parameters:
+        - name: organizationId
+          in: path
+          description: ID of organization
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: adminId
+          in: path
+          description: ID of admin
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: Admin to update in the organization
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Admin'
+      responses:
+        '201':
+          description: Success
+        '400':
+          description: Bad inputs
+        '404':
+          description: Resource not found
+    delete:
+      tags:
+        - organizations
+      summary: Get organization data
+      description: ''
+      operationId: deleteOrganizationsAdmins
+      parameters:
+        - name: organizationId
+          in: path
+          description: ID of organization
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: adminId
+          in: path
+          description: ID of admin
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '204':
+          description: Success
+        '400':
+          description: Bad inputs
+        '404':
+          description: Resource not found
+components:
+  schemas:
+    Admin:
+      required:
+        - name
+        - email
+        - tags
+        - networks
+        - orgAccess
+      properties:
+        name:
+          type: string
+          description: The name of the dashboard administrator
+        email:
+          type: string
+          description: The email of the dashboard administrator. This attribute can not be updated.
+        orgAccess:
+          type: string
+          description: 'The privilege of the dashboard administrator on the organization (full, read-only, none)'
+        tags:
+          type: array
+          description: The list of tags that the dashboard administrator has privileges on
+          items:
+            $ref: '#/components/schemas/Tag'
+        networks:
+          type: array
+          description: The list of networks that the dashboard administrator has privileges on
+          items:
+            $ref: '#/components/schemas/Network'
+    Tag:
+      type: object
+      required:
+        - tag
+        - access
+      properties:
+        tag:
+          type: string
+          description: The name of the tag
+        access:
+          type: string
+          description: The privilege of the dashboard administrator on the tag
+    Network:
+      type: object
+      required:
+        - id
+        - access
+      properties:
+        id:
+          description: The network ID
+          type: integer
+          format: int64
+        access:
+          description: The privilege of the dashboard administrator on the network
+          type: string
+  securitySchemes:
+      ApiKeyAuth:
+        type: apiKey
+        in: header
+        name: X-Cisco-Meraki-API-Key
+security:
+  - ApiKeyAuth: []
+
+externalDocs:
+  description: Find out more about Meraki API docs
+  url: 'http://dashboard.meraki.com/api_docs'
