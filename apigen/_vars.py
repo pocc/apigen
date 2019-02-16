@@ -465,19 +465,3 @@ OPENAPI_STUB = {
     }
   }
 }
-
-DEFAULT_APICALL_DICT = {
-    'summary': '',
-    'parameters': [],
-    'responses': {
-        '400': {
-            '$ref': '#/components/responses/400'
-        },
-        '404': {
-            '$ref': '#/components/responses/404'
-        },
-        '500': {
-            '$ref': '#/components/responses/500'
-        }
-    }
-}

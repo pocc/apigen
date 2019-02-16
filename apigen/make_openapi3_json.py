@@ -15,15 +15,9 @@ Example generated JSON:
         [2] "summary": "Get organization data",
   ...
 
-  [3] "security": [
-    {
-      "ApiKeyAuth": []
-    }
-  ],
-  ...
 }
 
-[0], [3] static docstrings prepended and appended to JSON respectively
+[0] docstring with static parameters
 [1] Via `generate_path_dicts`
 [2] Via `get_apicall_dict`
 """
@@ -63,10 +57,27 @@ def get_apicall_dict(api_call):
     openapi_path = re.sub(r'[\[\{].*?[\}\]]', '{{{}}}', api_call['path'])
 
     apicall_success = str(api_call['successful_http_status'])
+    api_method = api_call['http_method'].lower()
+    last_non_param_word = openapi_path.replace('/{{{}}}', '').split('/')[-1]
+    operation_id_snake_case = api_method + '_' + last_non_param_word
+
+    operation_id = inf.camelize(operation_id_snake_case, False)
     apicall_json = {
         'description': api_call['description'],
-        'operationId': 'pokeme',
-        ** _vars.DEFAULT_APICALL_DICT
+        'operationId': operation_id,
+        'summary': '',
+        'parameters': [],
+        'responses': {
+            '400': {
+                '$ref': '#/components/responses/400'
+            },
+            '404': {
+                '$ref': '#/components/responses/404'
+            },
+            '500': {
+                '$ref': '#/components/responses/500'
+            }
+        }
     }
     apicall_json['responses'][apicall_success] = {
         'description': 'Operation successful!'
@@ -82,10 +93,9 @@ def get_apicall_dict(api_call):
         }
     elif api_call['http_method'] == 'GET':
         apicall_json['responses'][apicall_success]['content'] = {
-            'application/json': {
-                'schema': {
-                    '$ref': '#/components/schemas/fixme_plural'
-                }
+            'type': 'array',
+            'items': {
+                    '$ref': '#/components/schemas/fixme'
             }
         }
 
@@ -100,6 +110,10 @@ def get_apicall_dict(api_call):
         apicall_json['parameters'] += [{
             path_param: path_primitives[path_param]
         }]
+    if path_params:
+        last_param = path_params[-1]
+        captialized_last_param = last_param[0].upper() + last_param[1:]
+        apicall_json['operationId'] += 'By' + captialized_last_param
 
     openapi_path = openapi_path.format(*path_params)
 
@@ -127,8 +141,8 @@ def converter_main():
 
     all_openapi_dict = _vars.OPENAPI_STUB
     all_openapi_dict['paths'] = generate_path_dicts(api_docs)
-    openapi_json_text = json.dumps(all_openapi_dict, indent=2, sort_keys=True)
+    openapi_json_text = json.dumps(all_openapi_dict, indent=2)
     return openapi_json_text
 
 
-print(converter_main())
+var = converter_main()
