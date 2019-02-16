@@ -43,19 +43,52 @@ def generate_path_dicts(api_docs):
     paths = {}
     for section in api_docs:
         for api_call in api_docs[section]:
-            path = api_call['path']
             method = api_call['http_method'].lower()
+            path, apicall_dict = get_apicall_dict(api_call)
             if path not in paths:
                 paths[path] = {method: {}}
-            paths[path][method] = get_apicall_dict(api_call)
+
+            paths[path][method] = apicall_dict
 
     return paths
 
 
 def get_apicall_dict(api_call):
-    """Get the api call JSON that is."""
+    """Get the api call JSON that is.
+
+    This article was used for response syntax:
+        https://swagger.io/docs/specification/describing-responses/
+    """
     path_primitives = _vars.PATH_PRIMITIVES
-    apicall_json = {'parameters': []}
+    openapi_path = re.sub(r'[\[\{].*?[\}\]]', '{{{}}}', api_call['path'])
+
+    apicall_success = str(api_call['successful_http_status'])
+    apicall_json = {
+        'description': api_call['description'],
+        'operationId': 'pokeme',
+        ** _vars.DEFAULT_APICALL_DICT
+    }
+    apicall_json['responses'][apicall_success] = {
+        'description': 'Operation successful!'
+    }
+
+    if api_call['http_method'] in ['PUT', 'POST']:
+        apicall_json['responses'][apicall_success]['content'] = {
+            'application/json': {
+                'schema': {
+                    '$ref': '#/components/schemas/fixme'
+                }
+            }
+        }
+    elif api_call['http_method'] == 'GET':
+        apicall_json['responses'][apicall_success]['content'] = {
+            'application/json': {
+                'schema': {
+                    '$ref': '#/components/schemas/fixme_plural'
+                }
+            }
+        }
+
     path_params = get_path_params(api_call['path'])
     for path_param in path_params:
         if path_param not in path_primitives:
@@ -67,16 +100,14 @@ def get_apicall_dict(api_call):
         apicall_json['parameters'] += [{
             path_param: path_primitives[path_param]
         }]
-    return apicall_json
+
+    openapi_path = openapi_path.format(*path_params)
+
+    return openapi_path, apicall_json
 
 
 def get_path_params(api_call_path):
-    """Get the params from the path.
-
-    1. If the param is 'id', prepend the word before it
-    2. If the prepend word is pluralized, singularize it
-    3. If the param is snake_case, change to camel case
-    """
+    """Get the params from the path."""
     path_params = re.findall(r'[\[\{](.*?)[\]\}]', api_call_path)
     for idx, path_param in enumerate(path_params):
 
@@ -95,9 +126,7 @@ def converter_main():
     api_docs = web.fetch_apidocs_json()
 
     all_openapi_dict = _vars.OPENAPI_STUB
-    all_openapi_dict['path'] = generate_path_dicts(api_docs)
-    all_openapi_dict['components'] = {}
-    all_openapi_dict['components']['securitySchemas'] = _vars.SECURITY_SCHEMES
+    all_openapi_dict['paths'] = generate_path_dicts(api_docs)
     openapi_json_text = json.dumps(all_openapi_dict, indent=2, sort_keys=True)
     return openapi_json_text
 

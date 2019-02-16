@@ -11,39 +11,54 @@ MAX_PORT_NUMBER = 48
 PATH_PRIMITIVES = {
     'organizationId': {
         'name': 'organizationId',
+        'in': 'path',
         'description': 'Number that uniquely identifies an organization.'
             '\n ↳ get_orgs()',
         'example': 212406,
-        'schema': {},
+        'schema': {
+            'type': 'integer',
+        },
         'required': True
 
     },
     'networkId': {
         'name': 'networkId',
+        'in': 'path',
         'description': 'String that uniquely identifies a network'
             '\n ↳ get_networks_by_org_id(org_id)',
         'example': 'N_24329156',
-        'schema': {},
+        'schema': {
+            'type': 'string',
+            'pattern': REGEX_NETWORK
+        },
         'required': True
     },
     'adminId': {
         'name': 'adminId',
+        'in': 'path',
         'description': 'Number that uniquely identifies an admin.'
             '\n ↳  get_admins_by_org_id(org_id)',
         'example': '545173',
-        'schema': {},
+        'schema': {
+            'type': 'integer',
+        },
         'required': True
     },
     'srId': {
         'name': 'srId',
+        'in': 'path',
         'description': 'UUID of static route' 
             '\n ↳ get_static_routes_by_network_id(network_id)',
         'example': 'd7fa4948-7921-4dfa-af6b-ae8b16c20c39',
-        'schema': {},
+        'schema': {
+            'type': 'string',
+            'format': 'uuid'
+        },
         'required': True
     },
     'serial': {
         'name': 'serial',
+        'in': 'path',
         'description': 'All caps Meraki serial number.'
             '\n ↳ get_devices_by_network_id(network_id)',
         'example': 'Q234-ABCD-5678',
@@ -55,6 +70,7 @@ PATH_PRIMITIVES = {
     },
     'namedTagScopeId': {
         'name': 'namedTagScopeId',
+        'in': 'path',
         'description': 'Tag SM scope ID'
             '\n ↳ get_sm_named_tag_scopes_by_network_id(network_id, params)',
         'example': 1234,
@@ -66,6 +82,7 @@ PATH_PRIMITIVES = {
     },
     'userId': {
         'name': 'userId',
+        'in': 'path',
         'description': 'User ID used for SM'
             '\n↳ get_sm_users_by_network_id(network_id, params)',
         'example': 1284392014819,
@@ -77,6 +94,7 @@ PATH_PRIMITIVES = {
     },
     'ssidNumber': {
         'name': 'ssidNumber',
+        'in': 'path',
         'description': 'Positional number of the SSID in the list'
             '\n ↳ get_ssids_by_network_id(network_id)',
         'example': 2,
@@ -89,11 +107,13 @@ PATH_PRIMITIVES = {
     },
     'zoneId': {
         'name': 'zoneId',
+        'in': 'path',
         'description': 'Camera Analytics Zone ID'
             '\n ↳ get_analytics_zones_by_serial(serial)',
         'example': 1,
         'schema': {
-            'type': 'integer'
+            'type': 'integer',
+            'minimum': 0
         },
         'required': True
     },
@@ -109,6 +129,7 @@ PATH_PRIMITIVES = {
     },
     'clientIdOrMacOrIp': {
         'name': 'clientIdOrMacOrIp',
+        'in': 'path',
         'description': 'Client ID or Mac or IP\n ↳ (multiple)',
         'example': '00:11:22:33:44:55',
         'schema': {
@@ -118,6 +139,7 @@ PATH_PRIMITIVES = {
     },
     'mac': {
         'name': 'mac',
+        'in': 'path',
         'description': 'Client MAC'
             '\n ↳ get_clients_by_serial(serial, params)',
         'example': '00:11:22:33:44:55',
@@ -129,6 +151,7 @@ PATH_PRIMITIVES = {
     },
     'configTemplateId': {
         'name': 'configTemplateId',
+        'in': 'path',
         'description': 'Like network ID, but for config templates.'
                        '\n↳ get_config_templates_by_org_id(org_id)',
         'example': 'N_24329156',
@@ -151,6 +174,7 @@ PATH_PRIMITIVES = {
     },
     'webhookTestId': {
         'name': 'webhookTestId',
+        'in': 'path',
         'description': 'ID of webhook test sent to your HTTP server. See'
             'https://documentation.meraki.com/z'
             'General_Administration/Other_Topics/Webhooks'
@@ -164,6 +188,7 @@ PATH_PRIMITIVES = {
     },
     'merakiAuthUserId': {
         'name': 'merakiAuthUserId',
+        'in': 'path',
         'description': 'Splash or RADIUS user hash',
         'example': 'aGlAaGkuY29t'
             '\n ↳ get_meraki_auth_users_by_network_id(network_id)',
@@ -174,6 +199,7 @@ PATH_PRIMITIVES = {
     },
     'phoneAnnouncementId': {
         'name': 'phoneAnnouncementId',
+        'in': 'path',
         'description': '↳ get_phone_announcements_by_network_id(network_id)',
         'example': 1284392014819,
         'schema': {
@@ -184,6 +210,7 @@ PATH_PRIMITIVES = {
     },
     'phoneCallgroupId': {
         'name': 'phoneCallgroupId',
+        'in': 'path',
         'description': '↳ get_phone_callgroups_by_network_id(network_id)',
         'example': 178449602133687616,
         'schema': {
@@ -194,6 +221,7 @@ PATH_PRIMITIVES = {
     },
     'phoneConferenceRoomId': {
         'name': 'phoneConferenceRoomId',
+        'in': 'path',
         'description': '↳ get_networks_by_org_id(org_id)',
         'example': 563512903374733359,
         'schema': {
@@ -204,6 +232,7 @@ PATH_PRIMITIVES = {
     },
     'contactId': {
         'name': 'contactId',
+        'in': 'path',
         'description': 'Phone contact ID'
             '\n ↳ get_phone_assignments_by_network_id(network_id)',
         'example': 823,
@@ -214,6 +243,7 @@ PATH_PRIMITIVES = {
     },
     'requestId': {
         'name': 'requestId',
+        'in': 'path',
         'description': 'PII request ID'
                        '\n ↳ get_pii_requests_by_network_id(network_id)',
         'example': 1234,
@@ -225,6 +255,7 @@ PATH_PRIMITIVES = {
     },
     'samlRoleId': {
         'name': 'samlRoleId',
+        'in': 'path',
         'description': 'ID unique to SAML User'
             '\n ↳ get_saml_roles_by_org_id(org_id)',
         'example': 'TEdJIEN1c3RvbWVy',
@@ -235,6 +266,7 @@ PATH_PRIMITIVES = {
     },
     'clientId': {
         'name': 'clientId',
+        'in': 'path',
         'description': 'Client ID Hash'
             '\n ↳ get_clients_by_serial(serial)',
         'example': 'k74272e',
@@ -245,6 +277,7 @@ PATH_PRIMITIVES = {
     },
     'profileId': {
         'name': 'profileId',
+        'in': 'path',
         'description': 'Cisco Clarity Profile ID'
             '\n ↳ create_profile_clarity_by_network_id(network_id, params)',
         'example': 12345,
@@ -256,6 +289,7 @@ PATH_PRIMITIVES = {
     },
     'appId': {
         'name': 'appId',
+        'in': 'path',
         'description': 'SM Cisco Polaris app ID'
               '\n ↳ get_app_polaris_by_network_id(network_id, params)',
         'example': 123456,
@@ -267,6 +301,7 @@ PATH_PRIMITIVES = {
     },
     'smId': {
         'name': 'smId',
+        'in': 'path',
         'description': 'poke me',
         'example': 'poke me',
         'schema': {
@@ -276,6 +311,7 @@ PATH_PRIMITIVES = {
     },
     'service': {
         'name': 'service',
+        'in': 'path',
         'description': 'MX Services'
             '\n ↳ get_firewalled_services_by_network_id(network_id)',
         'example': 'web',
@@ -287,6 +323,7 @@ PATH_PRIMITIVES = {
     },
     'vlanId': {
         'name': 'vlanId',
+        'in': 'path',
         'description': 'VLAN number'
             '\n ↳ get_vlans_by_network_id(network_id)',
         'example': 1234,
@@ -299,6 +336,7 @@ PATH_PRIMITIVES = {
     },
     'switchPortNumber': {
         'name': 'switchPortNumber',
+        'in': 'path',
         'description': '↳ get_switch_ports_by_serial(serial)',
         'example': 7,
         'schema': {
@@ -310,6 +348,7 @@ PATH_PRIMITIVES = {
     },
     'targetGroupId': {
         'name': 'targetGroupId',
+        'in': 'path',
         'description': 'Beta endpoint lacks means of fetching ID.'
                        '\n ↳ get_switch_ports_by_serial(serial)',
         'example': 'poke me',
@@ -320,6 +359,7 @@ PATH_PRIMITIVES = {
     },
     'groupPolicyId': {
         'name': 'groupPolicyId',
+        'in': 'path',
         'description': 'Id that uniquely identifies a group policy'
                        '\n ↳ poke me',
         'example': 'poke me',
@@ -365,13 +405,79 @@ OPENAPI_STUB = {
   "externalDocs": {
     "description": "Find out more about Meraki API docs",
     "url": "http://dashboard.meraki.com/api_docs"
-  }
-}
-
-SECURITY_SCHEMES = {
+  },
+  'components': {
+    'responses': {
+      '400': {
+        'description': 'Bad request. Check input params.',
+        'content': {
+          'application/json': {
+            'schema': {
+              '$ref': '#/components/schemas/Error'
+            }
+          }
+        }
+      },
+      '404': {
+        'description': 'Resource not found',
+        'content': {
+          'application/json': {
+            'schema': {
+              '$ref': '#/components/schemas/Error'
+            }
+          }
+        }
+      },
+      '500': {
+        'description': 'Server error.',
+        'content': {
+          'application/json': {
+            'schema': {
+              '$ref': '#/components/schemas/Error'
+            }
+          }
+        }
+      }
+    },
+    'schemas': {
+      'Error': {
+        'type': 'object',
+        'properties': {
+          'code': {
+            'type': 'string'
+          },
+          'message': {
+            'type': 'string'
+          },
+          'required': [
+            'code',
+            'message'
+          ]
+        }
+      }
+    },
+    'securitySchemes': {
       "ApiKeyAuth": {
         "type": "apiKey",
         "in": "header",
         "name": "X-Cisco-Meraki-API-Key"
       }
     }
+  }
+}
+
+DEFAULT_APICALL_DICT = {
+    'summary': '',
+    'parameters': [],
+    'responses': {
+        '400': {
+            '$ref': '#/components/responses/400'
+        },
+        '404': {
+            '$ref': '#/components/responses/404'
+        },
+        '500': {
+            '$ref': '#/components/responses/500'
+        }
+    }
+}
