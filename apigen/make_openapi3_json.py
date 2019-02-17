@@ -1,3 +1,17 @@
+# -*- coding: utf-8 -*-
+# Copyright 2019 Ross Jacobs All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 """Generate OpenAPI JSON.
 
 More info on the standard can be found here:
@@ -62,25 +76,18 @@ def get_apicall_dict(api_call):
     operation_id_snake_case = api_method + '_' + last_non_param_word
 
     operation_id = inf.camelize(operation_id_snake_case, False)
+    apicall_success_message = api_call['http_method'] + 'Operation successful!'
     apicall_json = {
         'description': api_call['description'],
         'operationId': operation_id,
         'summary': '',
         'parameters': [],
         'responses': {
-            '400': {
-                '$ref': '#/components/responses/400'
-            },
-            '404': {
-                '$ref': '#/components/responses/404'
-            },
-            '500': {
-                '$ref': '#/components/responses/500'
-            }
+            apicall_success: {'description': apicall_success_message},
+            '400': {'$ref': '#/components/responses/400'},
+            '404': {'$ref': '#/components/responses/404'},
+            '500': {'$ref': '#/components/responses/500'}
         }
-    }
-    apicall_json['responses'][apicall_success] = {
-        'description': 'Operation successful!'
     }
 
     if api_call['http_method'] in ['PUT', 'POST']:
@@ -107,9 +114,7 @@ def get_apicall_dict(api_call):
                       "\nPlease create an issue!"
             raise Exception(err_msg)
 
-        apicall_json['parameters'] += [{
-            path_param: path_primitives[path_param]
-        }]
+        apicall_json['parameters'] += [path_primitives[path_param]]
     if path_params:
         last_param = path_params[-1]
         captialized_last_param = last_param[0].upper() + last_param[1:]
@@ -146,3 +151,4 @@ def converter_main():
 
 
 var = converter_main()
+print(var)
