@@ -49,10 +49,10 @@ def fetch_apidocs_json():
             # Get the json by splitting the pagetext at json beginning and end.
             lower_split = text.split("window.allApisJson = ")[1]
             all_api_docs_str = lower_split.split(";\n  </script>")[0]
+            api_docs = json.loads(all_api_docs_str)
             # Write the json so a cached version is now available.
             with open(api_json_name, 'w') as file_obj:
-                file_obj.write(all_api_docs_str)
-            api_docs = json.loads(all_api_docs_str)
+                file_obj.write(json.dumps(api_docs, indent=2))
 
     except socket.gaierror:
         # If there's a network problem.
@@ -65,3 +65,5 @@ def get_json_str_from_file(filename):
     """Open a file and get its JSON as a dict."""
     with open(filename) as file_obj:
         return json.loads(file_obj.read())
+
+fetch_apidocs_json()

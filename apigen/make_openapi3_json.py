@@ -43,22 +43,35 @@ import inflection as inf
 
 import apigen._web as web
 import apigen._vars as _vars
+import apigen.utils as utils
 import apigen
 
 
 def generate_path_dicts(api_docs):
     """Get the paths from the Meraki API docs JSON."""
     paths = {}
+    all_schemas = {}
+    operation_ids = []
     for section in api_docs:
         for api_call in api_docs[section]:
             method = api_call['http_method'].lower()
-            path, apicall_dict = get_apicall_dict(api_call)
+            path, schemas, apicall_dict = get_apicall_dict(api_call)
+
+            # Ensure no operation id duplicates by adding a number to the end
+            count = 2
+            unique_operation_id = apicall_dict['operationId']
+            while unique_operation_id in operation_ids:
+                unique_operation_id = apicall_dict['operationId'] + str(count)
+                count += 1
+            apicall_dict['operationId'] = unique_operation_id
+            operation_ids += [unique_operation_id]
             if path not in paths:
                 paths[path] = {method: {}}
+            all_schemas = {**all_schemas, **schemas}
 
             paths[path][method] = apicall_dict
 
-    return paths
+    return paths, all_schemas
 
 
 def get_apicall_dict(api_call):
@@ -69,14 +82,14 @@ def get_apicall_dict(api_call):
     """
     path_primitives = _vars.PATH_PRIMITIVES
     openapi_path = re.sub(r'[\[\{].*?[\}\]]', '{{{}}}', api_call['path'])
+    schemas = {}
 
     apicall_success = str(api_call['successful_http_status'])
     api_method = api_call['http_method'].lower()
     last_non_param_word = openapi_path.replace('/{{{}}}', '').split('/')[-1]
-    operation_id_snake_case = api_method + '_' + last_non_param_word
-
-    operation_id = inf.camelize(operation_id_snake_case, False)
-    apicall_success_message = api_call['http_method'] + 'Operation successful!'
+    last_non_param_word = inf.camelize(last_non_param_word)
+    operation_id = api_method + last_non_param_word
+    apicall_success_message = api_call['http_method'] + ' Successful!'
     apicall_json = {
         'description': api_call['description'],
         'operationId': operation_id,
@@ -84,35 +97,104 @@ def get_apicall_dict(api_call):
         'parameters': [],
         'responses': {
             apicall_success: {'description': apicall_success_message},
+            '301': {'$ref': '#/components/responses/301'},
+            '302': {'$ref': '#/components/responses/302'},
+            '307': {'$ref': '#/components/responses/302'},
             '400': {'$ref': '#/components/responses/400'},
             '404': {'$ref': '#/components/responses/404'},
             '500': {'$ref': '#/components/responses/500'}
         }
     }
 
-    if api_call['http_method'] in ['PUT', 'POST']:
+    # POST /networks/{networkId}/devices/{serial}/remove returns 204 wrongly
+    has_put_post_success = apicall_success in ['200', '201']
+    if api_call['http_method'] in ['PUT', 'POST'] and has_put_post_success:
         apicall_json['responses'][apicall_success]['content'] = {
             'application/json': {
                 'schema': {
-                    '$ref': '#/components/schemas/fixme'
+                    '$ref': '#/components/schemas/' + last_non_param_word
                 }
             }
         }
-    elif api_call['http_method'] == 'GET':
+
+    elif api_call['http_method'] == 'GET' and apicall_success == '200':
+        pass
+        # Assuming that it's fine to skip providing a response schema for gets
+        """
+        array_schema_name = 'ArrayOf' + last_non_param_word
         apicall_json['responses'][apicall_success]['content'] = {
-            'type': 'array',
-            'items': {
-                    '$ref': '#/components/schemas/fixme'
+            'application/json': {
+              'schema': {
+                '$ref': '#/components/schemas/' + array_schema_name
+                }
             }
         }
+        
+        schemas[array_schema_name] = {
+            'type': 'array',
+            'items': {
+                '$ref': '#/components/schemas/' + last_non_param_word
+            }
+        }
+
+        # Creates a dummy value for object type if not assigned eleswhere
+        if last_non_param_word not in schemas:
+            schemas[last_non_param_word] = {
+                'type': 'string',
+                'properties': 
+            }
+        """
+
+    has_query_params = 'params' in api_call and api_call['params']
+    if has_query_params:
+        all_params = [param['name'] for param in api_call['params']]
+        required_params = [param['name'] for param in api_call['params']
+                           if 'optional' not in param['description']]
+        schemas[last_non_param_word] = {
+            "required": required_params,
+            "properties": {}
+        }
+        for p_index, param in enumerate(all_params):
+            param_dict = api_call['params'][p_index]
+            nested = 'params' in param_dict
+            if nested:
+                nested_params = [param for param in param_dict['params']]
+                nested_params_names =[param['name'] for param in nested_params]
+                nested_params_dict = {}
+                for np_index, nested_param in enumerate(nested_params):
+                    nested_param_dict = param_dict['params'][np_index]
+                    nested_params_dict[nested_param['name']] = {
+                        'type': 'string',
+                        'description': nested_param_dict['description']
+                    }
+                schemas[last_non_param_word]['properties'][param] = {
+                    'type': 'array',
+                    'description': param_dict['description'],
+                    'items': {
+                        '$ref': '#/components/schemas/' + param
+                    }
+                }
+                schemas[param] = {
+                    'type': 'object',
+                    'required': nested_params_names,
+                    'properties': nested_params_dict
+                }
+            else:
+                schemas[last_non_param_word]['properties'][param] = {
+                    'type': 'string',
+                    'description': param_dict['description']
+                }
 
     path_params = get_path_params(api_call['path'])
     for path_param in path_params:
         if path_param not in path_primitives:
-            webbrowser.open(apigen.__issues_url__ + '/new')
-            err_msg = "Untracked API Primitive " + path_param + "!"  \
-                      "\nPlease create an issue!"
-            raise Exception(err_msg)
+            issue = utils.GithubIssues()
+            is_issue_required = issue.check_issue(path_param)
+            if is_issue_required:
+                message = "Press i & return to submit an issue on Github." + \
+                          "\nPress return to continue."
+                if input(message).lower() == 'i':
+                    webbrowser.open(apigen.__issues_url__ + '/new')
 
         apicall_json['parameters'] += [path_primitives[path_param]]
     if path_params:
@@ -122,7 +204,7 @@ def get_apicall_dict(api_call):
 
     openapi_path = openapi_path.format(*path_params)
 
-    return openapi_path, apicall_json
+    return openapi_path, schemas, apicall_json
 
 
 def get_path_params(api_call_path):
@@ -145,10 +227,13 @@ def converter_main():
     api_docs = web.fetch_apidocs_json()
 
     all_openapi_dict = _vars.OPENAPI_STUB
-    all_openapi_dict['paths'] = generate_path_dicts(api_docs)
-    openapi_json_text = json.dumps(all_openapi_dict, indent=2)
-    return openapi_json_text
+    all_openapi_dict['paths'], gen_schemas = generate_path_dicts(api_docs)
+    all_schemas = {**all_openapi_dict['components']['schemas'], **gen_schemas}
+    all_openapi_dict['components']['schemas'] = all_schemas
+
+    openapi_json_text = json.dumps(all_openapi_dict, indent=2, sort_keys=True)
+    with open('openapi3.json', 'w') as openapi_file:
+        openapi_file.write(openapi_json_text)
 
 
-var = converter_main()
-print(var)
+converter_main()

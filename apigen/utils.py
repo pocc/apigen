@@ -45,12 +45,15 @@ class GithubIssues:
         """Check whether a new API primitive has an issue assigned."""
         issues_json = json.loads(self.get_issues())
         existing_issue_titles = [issue['title'] for issue in issues_json]
-        new_issue_required = api_primitive not in existing_issue_titles
-        if new_issue_required and is_up_to_date():
+        new_issue_required = api_primitive not in existing_issue_titles \
+            and is_up_to_date()
+        if new_issue_required:
             print("INFO: API primitive not found, please create an issue:"
                   "\n\n\thttps://github.com/pocc/apigen/issues"
                   "\n\tTitle\tNew API primitive found: `" + api_primitive + "`"
                   "\n\tBody\tFound at " + str(datetime.datetime.utcnow()))
+
+        return new_issue_required
 
 
 def is_up_to_date():

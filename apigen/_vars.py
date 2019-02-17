@@ -14,10 +14,11 @@
 # limitations under the License.
 """Dicts and strings for use by other modules."""
 
+# OpenAPI doesn't like boundaries, so no (?i)\b ... \b for case insensitivity.
 REGEX_MAC_ADDR = r'^([0-9a-fA-F]{2}:){5}([0-9a-fA-F]{2})$'
 REGEX_NETWORK = r'^[LN]_[\d]*$'
 REGEX_SERIAL = r'^Q2[A-Z0-9]{2}-[A-Z0-9]{4}-[A-Z0-9]{4}$'
-REGEX_MX_SERVICES = r'^(?i)\bicmp|web|snmp\b$'
+REGEX_MX_SERVICES = r'^icmp|web|snmp|ICMP|WEB|SNMP$'
 MIN_VLAN = 1
 MAX_VLAN = 4094
 MIN_PORT_NUMBER = 1
@@ -134,6 +135,8 @@ PATH_PRIMITIVES = {
         'required': True
     },
     'bluetoothClientId': {
+        'name': 'bluetoothClientId',
+        'in': 'path',
         'description': 'Bluetooth MAC'
             '\n ↳ get_bluetooth_clients_by_network_id(network_id, params)',
         'example': '00:11:22:33:44:55',
@@ -178,6 +181,8 @@ PATH_PRIMITIVES = {
         'required': True
     },
     'httpServerId': {
+        'name': 'httpServerId',
+        'in': 'path',
         'description': 'Webhook HTTP server ID. See '
             'https://documentation.meraki.com/z'
             'General_Administration/Other_Topics/Webhooks'
@@ -404,7 +409,7 @@ OPENAPI_STUB = {
   "tags": [],
   "servers": [
     {
-      "url": "http://api.meraki.com/api/{basePath}",
+      "url": "http://dashboard.meraki.com/api/{basePath}",
       "variables": {
         "basePath": {
           "default": "v0",
@@ -424,6 +429,26 @@ OPENAPI_STUB = {
   },
   'components': {
     'responses': {
+      '301': {
+        'description': 'Permanent Redirect.',
+        'content': {
+          'application/json': {
+            'schema': {
+              '$ref': '#/components/schemas/Error'
+            }
+          }
+        }
+      },
+      '302': {
+        'description': 'Temporary Redirect.',
+        'content': {
+          'application/json': {
+            'schema': {
+              '$ref': '#/components/schemas/Error'
+            }
+          }
+        }
+      },
       '400': {
         'description': 'Bad request. Check input params.',
         'content': {
@@ -464,12 +489,16 @@ OPENAPI_STUB = {
           },
           'message': {
             'type': 'string'
-          },
-          'required': [
-            'code',
-            'message'
-          ]
-        }
+          }
+        },
+        'required': [
+          'code',
+          'message'
+        ]
+      },
+      # POST /networks/{networkId}/unbind returns a network dict, so redirect
+      'Unbind': {
+        '$ref': '#/components/schemas/Networks'
       }
     },
     'securitySchemes': {
