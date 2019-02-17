@@ -5,11 +5,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-Still building
+* OpenAPI to Postman converter
+* Tests
 
 ## [0.0.0] - 2019-02-15
 ### Added
 * Project Structure
+* Fetch Meraki API JSON from API docs
+* Direct user to create a github issue if there is a new API primitive 
+  (i.e. Any new {path params} in endpoint: /this/{is}/an/{endpoint})
+* CLI
+* README / LICENSE / CHANGELOG
 
 <!---
 CHANGELOG TYPES
@@ -22,5 +28,5 @@ Fixed:      for any bug fixes.
 Security:   for vulnerability fixes.
 -->
 
-[Unreleased]: https://github.com/pocc/apigen/compare/v0.2.1...HEAD
-[0.0.0]: https://github.com/pocc/apigen/commit/abc123
+[Unreleased]: https://github.com/pocc/apigen/compare/v0.0.0...HEAD
+[0.0.0]: https://github.com/pocc/apigen/commit/ba8dec9

@@ -1,4 +1,4 @@
-# APIGen 
+# MAD CodeGen
 Meraki API Docs Code Generator
 
 ## Problem

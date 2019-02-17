@@ -12,7 +12,18 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""Convert Meraki API docs to OpenAPI 3.0.0 spec."""
-__version__ = '0.0.0'
-__project_url__ = 'https://github.com/pocc/apigen'
-__issues_url__ = __project_url__ + '/issues'
+"""
+mad-codegen --lang <lang>...
+
+OPTIONS:
+  -l, --lang <lang>     Output language. Can be specified multiple times.
+
+SEE ALSO:
+  OpenAPI Generator: https://github.com/OpenAPITools/openapi-generator
+"""
+import docopt
+
+
+def get_cli_args():
+    """CLI entry point"""
+    return docopt.docopt(__doc__)

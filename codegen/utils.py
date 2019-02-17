@@ -19,11 +19,11 @@ import re
 import datetime
 import distutils.version as versioning
 
-import apigen
+import codegen
 
 
 class GithubIssues:
-    """Interface with Github Issues for apigen project."""
+    """Interface with Github Issues for mad-codegen project."""
     def __init__(self):
         self.headers = {
             'Authorization': 'Basic cG9jYzo5Nzg5ODkwYmU4YThiYzZiZDc4'
@@ -34,7 +34,7 @@ class GithubIssues:
     def get_issues(self):
         """Get the issues for this project."""
         conn = http.client.HTTPSConnection('api.github.com')
-        conn.request('GET', '/repos/pocc/apigen/issues',
+        conn.request('GET', '/repos/pocc/mad-codegen/issues',
                      headers=self.headers)
         resp = conn.getresponse()
         issues_text = resp.read().decode('utf-8')
@@ -49,7 +49,7 @@ class GithubIssues:
             and is_up_to_date()
         if new_issue_required:
             print("INFO: API primitive not found, please create an issue:"
-                  "\n\n\thttps://github.com/pocc/apigen/issues"
+                  "\n\n\thttps://github.com/pocc/mad-codegen/issues"
                   "\n\tTitle\tNew API primitive found: `" + api_primitive + "`"
                   "\n\tBody\tFound at " + str(datetime.datetime.utcnow()))
 
@@ -59,14 +59,14 @@ class GithubIssues:
 def is_up_to_date():
     """Check whether this program is out of date with github's."""
     base_url = 'raw.githubusercontent.com'
-    route = '/pocc/apigen/master/apigen/__init__.py'
+    route = '/pocc/mad-codegen/master/mad-codegen/__init__.py'
     conn = http.client.HTTPSConnection(base_url)
     conn.request('GET', route, headers={'User-Agent': 'Merakygen'})
     resp = conn.getresponse()
     init_text = resp.read().decode('utf-8')
     web_version = re.search(r'__version__ ?= ?\'([0-9.]*)\'', init_text)[1]
 
-    up_to_date = versioning.StrictVersion(apigen.__version__) \
+    up_to_date = versioning.StrictVersion(codegen.__version__) \
         >= versioning.StrictVersion(web_version)
 
     return up_to_date

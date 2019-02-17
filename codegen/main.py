@@ -16,8 +16,8 @@
 import subprocess as sp
 import re
 
-import apigen._cli as cli
-import apigen.make_api_client as api_client
+import codegen._cli as cli
+import codegen.make_api_client as api_client
 
 
 def main():

@@ -41,10 +41,10 @@ import webbrowser
 
 import inflection as inf
 
-import apigen._web as web
-import apigen._vars as _vars
-import apigen.utils as utils
-import apigen
+import codegen._web as web
+import codegen._vars as _vars
+import codegen.utils as utils
+import codegen
 
 
 def generate_path_dicts(api_docs):
@@ -194,7 +194,7 @@ def get_apicall_dict(api_call):
                 message = "Press i & return to submit an issue on Github." + \
                           "\nPress return to continue."
                 if input(message).lower() == 'i':
-                    webbrowser.open(apigen.__issues_url__ + '/new')
+                    webbrowser.open(codegen.__issues_url__ + '/new')
 
         apicall_json['parameters'] += [path_primitives[path_param]]
     if path_params:
