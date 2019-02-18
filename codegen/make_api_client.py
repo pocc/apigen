@@ -43,7 +43,7 @@ def generate_api_clients(langs, openapi_location):
     for lang in langs:
         cmd_list = ['java', '-jar', 'openapi-generator-cli.jar', 'generate',
                     '-i', openapi_location,
-                    '-l', lang,
+                    '-g', lang,
                     '-o', 'generated/' + lang]
         result = sp.check_output(cmd_list)
         print(result)

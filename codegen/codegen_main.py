@@ -26,16 +26,13 @@ def main():
     """Main function."""
     check_requirements()
     args = cli.get_cli_args()
-    available_langs = get_languages()
-    invalid_langs = set().difference(set(available_langs))
-    if invalid_langs:
-        err_msg = "Valid languages on system: " + available_langs + \
-            "\nInvalid entered languages: " + str(invalid_langs)
-        raise SyntaxWarning(err_msg)
 
-    openapi3_location = openapi3.make_spec('openapi3' in args['--spec'])
+    valid_specs = ['postman', 'openapi3']
+    user_specs = [arg for arg in args['--options'] if arg in valid_specs]
+
+    openapi3_location = openapi3.make_spec('openapi3' in user_specs)
     if 'postman' in args['--spec']:
-        postman.make_postman_collection(openapi3_location, args['--option'])
+        postman.make_postman_collection(openapi3_location, args['--options'])
 
     if args['--lang']:
         api_client.download_openapi_generator()
@@ -70,19 +67,6 @@ def get_java_version():
     version = re.search(r'"([\d]*\.[\d]*)\.[\d]*_', str(version_text))[1]
     
     return float(version)
-
-
-def get_languages():
-    """Get the languages that OpenAPI Generator supports.
-
-    :returns list
-    """
-    cmd_list = 'java -jar openapi-generator-cli.jar langs'.split(' ')
-    avail_languages_str = sp.check_output(cmd_list).decode('utf-8').strip()
-    languages_str = avail_languages_str.split(': ')[1]
-    languages_list = languages_str[1:-1].split(', ')  # Remove '[', ']'
-
-    return languages_list
 
 
 if __name__ == '__main__':

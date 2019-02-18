@@ -13,6 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Convert Meraki API docs to OpenAPI 3.0.0 spec."""
-__version__ = '0.0.0'
+__version__ = '0.1.0'
 __project_url__ = 'https://github.com/pocc/mad-codegen'
 __issues_url__ = __project_url__ + '/issues'
+__specs__ = ['openapi3', 'postman']

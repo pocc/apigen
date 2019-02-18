@@ -22,17 +22,19 @@ import shutil
 import tempfile
 
 
-def make_postman_collection(src, options):
+def make_postman_collection(src, options, verbosity=False):
     """Create a postman collection based on an OpenAPI3 JSON.
 
     Requires that node/npm be installed.
-    Install openapi-to-postmanv2 to a temp directory,
-        which is deleted when done.
+    Install openapi-to-postmanv2 to a temp dir, which is deleted when done.
+    Prefer to send stderr to stdout so user can see them.
 
     Args:
         src (str): Full path of OpenAPI3 JSON
-        options (list): List of openapi2postman options. See
+        options (str): String of openapi2postman options formatted
+            like '-option value -option2 value2'. For available options:
             https://github.com/postmanlabs/openapi-to-postman#options
+        verbosity (bool): Whether
 
     Raises:
         EnvironmentError: node is required. Quit if not found.
@@ -41,16 +43,21 @@ def make_postman_collection(src, options):
         raise EnvironmentError('Required node not found!')
 
     with tempfile.TemporaryDirectory() as tmpdir:
+        print("Installing openapi-to-postmanv2 to a temp dir...")
         shutil.copy(src, tmpdir)
         install_cmds = ['npm', 'install', '--prefix',
                         tmpdir, 'openapi-to-postmanv2']
-        print("Installing openapi-to-postmanv2...")
-        with sp.Popen(install_cmds, stdout=sp.PIPE, stderr=sp.PIPE) as sp_pipe:
+        with sp.Popen(install_cmds, stderr=sp.STDOUT) as sp_pipe:
             sp_pipe.communicate()
 
-        openapi2postman = \
-            'node_modules/openapi-to-postmanv2/bin/openapi2postmanv2.js'
-        openapi2postman_cmds = ['node', openapi2postman, '-s', src, options]
+        print("Converting OpenAPI3 to Postman...")
+        openapi2postman = tmpdir + \
+            '/node_modules/openapi-to-postmanv2/bin/openapi2postmanv2.js'
+        openapi2postman_cmds = ['node', openapi2postman, '-s', src]
+        if options:
+            openapi2postman_cmds += options.split(' ')
         with sp.Popen(openapi2postman_cmds, stderr=sp.STDOUT) as sp_pipe:
             sp_pipe.communicate()
+
+    print("Postman collection successfully created! Temporary files deleted.")
 

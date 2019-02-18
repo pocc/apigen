@@ -35,7 +35,7 @@ Currently 212 API calls (2019-02-18)
 ## Installation
 ### Optional Requires
 * java > v1.8 for code generation
-* node > 6 for conversion to Postman collection
+* node > v6 for Postman collection generation
 
 ### Install
 (Until this is uploaded to PyPi)

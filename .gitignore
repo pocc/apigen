@@ -1,5 +1,10 @@
+# PyCharm
 .idea/
+
+# Python
 __pycache__
+
+# Project
 openapi-generator-cli.jar
-# Generated Open API spec
 openapi3.json
+generated/
