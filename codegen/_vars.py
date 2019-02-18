@@ -13,6 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Dicts and strings for use by other modules."""
+import codegen
 
 # OpenAPI doesn't like boundaries, so no (?i)\b ... \b for case insensitivity.
 REGEX_MAC_ADDR = r'^([0-9a-fA-F]{2}:){5}([0-9a-fA-F]{2})$'
@@ -23,8 +24,11 @@ MIN_VLAN = 1
 MAX_VLAN = 4094
 MIN_PORT_NUMBER = 1
 MAX_PORT_NUMBER = 48
+# Noting that Meraki does not have a Terms of Service for its API
+# Using the Terms of Use for the website as the API is a part of it
+MERAKI_TERMS_OF_USE_URL = 'https://meraki.cisco.com/support/#policies:tou'
 
-# Prefer camelCase as the OpenAPI docs do. ' used per pythonic dict
+# Prefer camelCase as the OpenAPI docs do. Use ' as quote per python dict
 PATH_PRIMITIVES = {
     'organizationId': {
         'name': 'organizationId',
@@ -394,16 +398,18 @@ PATH_PRIMITIVES = {
 OPENAPI_STUB = {
   "openapi": "3.0.0",
   "info": {
-    "description": "Meraki API",
-    "version": "0",
-    "title": "Meraki API",
-    "termsOfService": "https://meraki.cisco.com/support/#policies:eca",
+    "title": 'Generated Meraki API',
+    "description": "Generated from Meraki API Docs."
+                   "\n" + codegen.__project_url__,
+    "version": codegen.__version__,
+    "termsOfService": MERAKI_TERMS_OF_USE_URL,
     "contact": {
-      "email": "rossbjacobs@gmail.com"
+      "name": codegen.__author__,
+      "email": codegen.__contact__
     },
     "license": {
-      "name": "Apache 2.0",
-      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+      "name": codegen.__license__,
+      "url": codegen.__license_url__
     }
   },
   "tags": [],

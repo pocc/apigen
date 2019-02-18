@@ -12,8 +12,68 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""Convert Meraki API docs to OpenAPI 3.0.0 spec."""
-__version__ = '0.1.0'
+"""Project variables."""
+__name__ = 'mad_codegen'
+__version__ = '0.1.2'
+__description__ = 'Meraki API Docs Code Generator'
+__author__ = 'Ross Jacobs'
+__contact__ = 'rossbjacobs@gmail.com'
+__license__ = 'Apache 2.0'
+__license_url__ = 'http://www.apache.org/licenses/LICENSE-2.0.html'
 __project_url__ = 'https://github.com/pocc/mad-codegen'
 __issues_url__ = __project_url__ + '/issues'
+
 __specs__ = ['openapi3', 'postman']
+__generators__ = {
+    'android': {
+        'version': '0.0.0'
+    },
+    'apache2': {
+        'version': '0.0.0'
+    },
+    'bash': {
+        'version': '0.0.0'
+    },
+    'c': {
+        'version': '0.0.0'
+    },
+    'csharp': {
+        'version': '0.0.0'
+    },
+    'go': {
+        'version': '0.0.0'
+    },
+    'java': {
+        'version': '0.0.0'
+    },
+    'kotlin': {
+        'version': '0.0.0'
+    },
+    'nodejs-server': {
+        'version': '0.0.0'
+    },
+    'php': {
+        'version': '0.0.0'
+    },
+    'powershell': {
+        'version': '0.0.0'
+    },
+    'python': {
+        'version': '0.0.0'
+    },
+    'python-flask': {
+        'version': '0.0.0'
+    },
+    'ruby': {
+        'version': '0.0.0'
+    },
+    'ruby-on-rails': {
+        'version': '0.0.0'
+    },
+    'rust': {
+        'version': '0.0.0'
+    },
+    'swift4': {
+        'version': '0.0.0'
+    }
+}

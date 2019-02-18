@@ -18,8 +18,11 @@ import json
 import re
 import datetime
 import distutils.version as versioning
+import logging
 
 import codegen
+
+logger = logging.getLogger(__name__)
 
 
 class GithubIssues:
@@ -70,3 +73,24 @@ def is_up_to_date():
         >= versioning.StrictVersion(web_version)
 
     return up_to_date
+
+
+def log_ext_program_output(program_name, program_output):
+    """Other programs return log text via Popen. Format that and log it.
+
+    Log it as debug as it is verbose and mostly not relevant to operation.
+
+    Args:
+        program_output (str): Output of another program
+        program_name (str): Name of the program being called
+    """
+    if 'ERROR' in program_output:
+        err_line = re.search(r'\n(.*?ERROR.*?)\n', program_output).group(1)
+        raise RuntimeError(program_name + ' produced error: ' + str(err_line))
+
+    output_line_start = '\n\t> [' + program_name + '] > '
+    program_output = program_output.replace('\n\n', '\n')
+    formatted_text = re.sub(r'\n([\S ])', output_line_start + '\\1',
+                            program_output)
+    logger.debug('`' + program_name + '` STDOUT >' +
+                 output_line_start + formatted_text)

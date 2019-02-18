@@ -232,7 +232,7 @@ def get_path_params(api_call_path):
 
 
 def make_spec(save_locally):
-    """Main function for the converter. This should be an essay, no calcs.
+    """Main function for the converter.
 
     Args:
         save_locally (bool): Whether to save the openapi json locally
@@ -249,7 +249,9 @@ def make_spec(save_locally):
 
     filename = 'openapi3.json'
     if save_locally:
-        filename = tempfile.tempdir().name + filename
+        filename = 'generated_clients/' + filename
+    else:
+        filename = tempfile.TemporaryDirectory().name + filename
     with open(filename, 'w') as openapi_file:
         openapi_file.write(openapi_json_text)
 
