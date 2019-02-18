@@ -22,7 +22,7 @@ import shutil
 import tempfile
 
 
-def convert_to_postman_collection(src, options=None):
+def make_postman_collection(src, options):
     """Create a postman collection based on an OpenAPI3 JSON.
 
     Requires that node/npm be installed.
@@ -41,14 +41,16 @@ def convert_to_postman_collection(src, options=None):
         raise EnvironmentError('Required node not found!')
 
     with tempfile.TemporaryDirectory() as tmpdir:
-        shutil.copy(src, tmpdir.name)
-        install_cmds = 'npm install openapi-to-postmanv2'.split(' ')
-        with sp.Popen(install_cmds, stderr=sp.STDOUT) as sp_pipe:
+        shutil.copy(src, tmpdir)
+        install_cmds = ['npm', 'install', '--prefix',
+                        tmpdir, 'openapi-to-postmanv2']
+        print("Installing openapi-to-postmanv2...")
+        with sp.Popen(install_cmds, stdout=sp.PIPE, stderr=sp.PIPE) as sp_pipe:
             sp_pipe.communicate()
 
         openapi2postman = \
             'node_modules/openapi-to-postmanv2/bin/openapi2postmanv2.js'
-        openapi2postman_cmds = ['node', openapi2postman, options]
+        openapi2postman_cmds = ['node', openapi2postman, '-s', src, options]
         with sp.Popen(openapi2postman_cmds, stderr=sp.STDOUT) as sp_pipe:
             sp_pipe.communicate()
 

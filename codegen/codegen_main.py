@@ -18,12 +18,14 @@ import re
 
 import codegen._cli as cli
 import codegen.make_api_client as api_client
+import codegen.make_openapi3_json as openapi3
+import codegen.make_postman as postman
 
 
 def main():
     """Main function."""
     check_requirements()
-    user_langs = cli.get_cli_args()['--lang']
+    args = cli.get_cli_args()
     available_langs = get_languages()
     invalid_langs = set().difference(set(available_langs))
     if invalid_langs:
@@ -31,9 +33,13 @@ def main():
             "\nInvalid entered languages: " + str(invalid_langs)
         raise SyntaxWarning(err_msg)
 
-    generate_openapi_json()
-    api_client.get_openapi_generator()
-    api_client.generate_api_clients(user_langs)
+    openapi3_location = openapi3.make_spec('openapi3' in args['--spec'])
+    if 'postman' in args['--spec']:
+        postman.make_postman_collection(openapi3_location, args['--option'])
+
+    if args['--lang']:
+        api_client.download_openapi_generator()
+        api_client.generate_api_clients(args['--lang'], openapi3_location)
 
 
 def check_requirements():
@@ -45,10 +51,6 @@ def check_requirements():
     check_java_version()
 
     print('...Requirements satisfied!')
-
-
-def generate_openapi_json():
-    """Generate an Open API 3.0.0 compatible json."""
 
 
 def check_java_version():

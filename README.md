@@ -44,6 +44,11 @@ git clone https://github.com/pocc/mad-codegen
 python gateway.py
 ```
 
+## Usage
+Save an openapi json:
+
+`mad-codegen --lang openapi`
+
 ## Acknowledgements
 @shiyuechengineer, @jletizia: For making API clients that inspired this project.
  

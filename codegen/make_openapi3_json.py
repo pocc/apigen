@@ -38,6 +38,7 @@ Example generated JSON:
 import json
 import re
 import webbrowser
+import tempfile
 
 import inflection as inf
 
@@ -230,8 +231,13 @@ def get_path_params(api_call_path):
     return path_params
 
 
-def converter_main():
-    """Main function for the converter. This should be an essay, no calcs."""
+def make_spec(save_locally):
+    """Main function for the converter. This should be an essay, no calcs.
+
+    Args:
+        save_locally (bool): Whether to save the openapi json locally
+            or in a temp folder.
+    """
     api_docs = web.fetch_apidocs_json()
 
     all_openapi_dict = _vars.OPENAPI_STUB
@@ -240,8 +246,11 @@ def converter_main():
     all_openapi_dict['components']['schemas'] = all_schemas
 
     openapi_json_text = json.dumps(all_openapi_dict, indent=2, sort_keys=True)
-    with open('openapi3.json', 'w') as openapi_file:
+
+    filename = 'openapi3.json'
+    if save_locally:
+        filename = tempfile.tempdir().name + filename
+    with open(filename, 'w') as openapi_file:
         openapi_file.write(openapi_json_text)
 
-
-converter_main()
+    return filename

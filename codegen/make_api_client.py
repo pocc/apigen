@@ -17,25 +17,32 @@
 Uses https://github.com/OpenAPITools/openapi-generator
 """
 import subprocess as sp
+import os
 import urllib.error as urlerr
 import urllib.request as urlreq
 
 
-def get_openapi_generator():
-    """Get OpenAPI Generator and execute per language."""
-    try:
-        jarfile = 'http://central.maven.org/maven2/org/openapitools/open' \
-                  'api-generator-cli/3.3.4/openapi-generator-cli-3.3.4.jar'
-        urlreq.urlretrieve(jarfile, 'openapi-generator-cli.jar')
-    except urlerr.URLError:
-        raise ConnectionError("An internet connection is required.")
+def download_openapi_generator():
+    """Download OpenAPI Generator if it's not cached."""
+    if not os.path.exists('openapi-generator-cli.jar'):
+        try:
+            jarfile = 'http://central.maven.org/maven2/org/openapitools/open' \
+                      'api-generator-cli/3.3.4/openapi-generator-cli-3.3.4.jar'
+            urlreq.urlretrieve(jarfile, 'openapi-generator-cli.jar')
+        except urlerr.URLError:
+            raise ConnectionError("An internet connection is required.")
 
 
-def generate_api_clients(*args):
-    """Generate all of the API clients the user has specified."""
-    for lang in args:
+def generate_api_clients(langs, openapi_location):
+    """Generate all of the API clients the user has specified.
+
+    Args:
+        langs (list): All of the user entered output options.
+        openapi_location (str): Where the openapi json is stored.
+    """
+    for lang in langs:
         cmd_list = ['java', '-jar', 'openapi-generator-cli.jar', 'generate',
-                    '-i', 'merakiapi.json',
+                    '-i', openapi_location,
                     '-l', lang,
                     '-o', 'generated/' + lang]
         result = sp.check_output(cmd_list)
