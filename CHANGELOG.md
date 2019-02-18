@@ -8,7 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * OpenAPI to Postman converter
 * Tests
 
-## [0.0.0] - 2019-02-15
+## [0.0.1] - 2019-02-18
+### Fixed
+* Issue #2: Missing API calls
+
+## [0.0.0] - 2019-02-17
 ### Added
 * Project Structure
 * Fetch Meraki API JSON from API docs

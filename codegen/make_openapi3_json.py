@@ -52,24 +52,32 @@ def generate_path_dicts(api_docs):
     paths = {}
     all_schemas = {}
     operation_ids = []
+    all_api_calls = []
     for section in api_docs:
         for api_call in api_docs[section]:
-            method = api_call['http_method'].lower()
-            path, schemas, apicall_dict = get_apicall_dict(api_call)
+            all_api_calls += [api_call]
+            # Add 2 API calls if there are 2 paths.
+            if api_call['alternate_path']:
+                api_call['path'] = api_call['alternate_path']
+                all_api_calls += [api_call]
 
-            # Ensure no operation id duplicates by adding a number to the end
-            count = 2
-            unique_operation_id = apicall_dict['operationId']
-            while unique_operation_id in operation_ids:
-                unique_operation_id = apicall_dict['operationId'] + str(count)
-                count += 1
-            apicall_dict['operationId'] = unique_operation_id
-            operation_ids += [unique_operation_id]
-            if path not in paths:
-                paths[path] = {method: {}}
-            all_schemas = {**all_schemas, **schemas}
+    for api_call in all_api_calls:
+        method = api_call['http_method'].lower()
+        path, schemas, apicall_dict = get_apicall_dict(api_call)
 
-            paths[path][method] = apicall_dict
+        # Ensure no operation id duplicates by adding a number to the end
+        count = 2
+        unique_operation_id = apicall_dict['operationId']
+        while unique_operation_id in operation_ids:
+            unique_operation_id = apicall_dict['operationId'] + str(count)
+            count += 1
+        apicall_dict['operationId'] = unique_operation_id
+        operation_ids += [unique_operation_id]
+        if path not in paths:
+            paths[path] = {method: {}}
+        all_schemas = {**all_schemas, **schemas}
+
+        paths[path][method] = apicall_dict
 
     return paths, all_schemas
 

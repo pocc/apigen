@@ -1,5 +1,11 @@
 # MAD CodeGen
-Meraki API Docs Code Generator
+Meraki API Docs Code Generator. 
+
+Generate code in $language by 
+1. Create an OpenAPI3 spec from the Meraki API Docs
+2. Feeding the spec into openapi-codegen for code generation
+
+*Still a work in progress*
 
 ## Problem
 There are currently 8+ client libraries for 4+ programming languages to
@@ -13,16 +19,16 @@ This project aims to fix this:
 ### Current API Client libraries
 Currently 212 API calls (2019-02-18)
 
-| Language | Calls | Done | Name                                                                                                   | Comments       |
-|----------|-------|------|--------------------------------------------------------------------------------------------------------|----------------|
-| C#       | 20    | 9%   | [Meraki.Dashboard](https://github.com/DimensionDataCBUSydney/Meraki.Dashboard)                         |                |
-| NodeJS   | 32    | 15%  | [merakiapi-node](https://github.com/mchenetz/merakiapi-node)                                           |                |
-| NodeJS   | 210   | 99%  | [node-meraki-dashboard](https://github.com/tejashah88/node-meraki-dashboard)                           | Elegant API    |
-| NodeJS   | 15    | 7%   | [meraki-cli](https://github.com/CumberlandGroup/meraki-cli)                                            |                |
-| Postman  | 172   | 81%  | [Postman Collection](https://documenter.getpostman.com/view/897512/meraki-dashboard-api/2To9xm) | Meraki-Managed |
-| Python   | 98    | 46%  | [dashboard-api-python](https://github.com/meraki/dashboard-api-python)                                 | Meraki-Managed |
-| Python   | 33    | 16%  | [meraki_api](https://github.com/guzmonne/meraki_api/tree/master/meraki_api)                            |                |
-| Ruby     | 57    | 27%  | [dashboardapi](https://github.com/jletizia/dashboardapi)                                               | Meraki-Managed |
+| Language | Calls | %Done | Name                                                                                                   | Comments       |
+|----------|-------|-------|--------------------------------------------------------------------------------------------------------|----------------|
+| C#       | 20    | 9%    | [Meraki.Dashboard](https://github.com/DimensionDataCBUSydney/Meraki.Dashboard)                         |                |
+| NodeJS   | 32    | 15%   | [merakiapi-node](https://github.com/mchenetz/merakiapi-node)                                           |                |
+| NodeJS   | 210   | 99%   | [node-meraki-dashboard](https://github.com/tejashah88/node-meraki-dashboard)                           | Elegant API    |
+| NodeJS   | 15    | 7%    | [meraki-cli](https://github.com/CumberlandGroup/meraki-cli)                                            |                |
+| Postman  | 172   | 81%   | [Postman Collection](https://documenter.getpostman.com/view/897512/meraki-dashboard-api/2To9xm) | Meraki-Managed |
+| Python   | 98    | 46%   | [dashboard-api-python](https://github.com/meraki/dashboard-api-python)                                 | Meraki-Managed |
+| Python   | 33    | 16%   | [meraki_api](https://github.com/guzmonne/meraki_api/tree/master/meraki_api)                            |                |
+| Ruby     | 57    | 27%   | [dashboardapi](https://github.com/jletizia/dashboardapi)                                               | Meraki-Managed |
 
 > List source: https://github.com/CiscoDevNet/awesome-merakiapis
 
