@@ -16,24 +16,27 @@
 
 USAGE:
     mad-codegen [--lang <lang>...] [--spec <spec>...]
-        [--options <options>] [--verbose]
+        [--options <options>] [--verbose | --verbosity <level>]
     mad-codegen --show-generators
     mad-codegen --help
-    mad-codegen [--version]
+    mad-codegen --version
 
 OPTIONS:
   -g, --show-generators     Show available languages on this system.
   -h, --help                Show this help dialog.
-  -l, --lang                Generate $language API client. Can be
+  -l, --lang <lang>         Generate $language API client. Can be
                             specified multiple times. Use --langs to
                             see the available languages on this system.
   -o, --options <options>   Options for language or postman generation. All
                             options should be enclosed in single/double quotes.
-  -s, --spec <spec>...      Spec to output. Can be specified multiple times.
+  -s, --spec <spec>         Spec to output. Can be specified multiple times.
                             Available:
                                 [openapi3, postman]
-  -v, --version             Show the version and exit
-  -V, --verbose             Include debugging information
+  -v, --verbose             Alias for --verbosity INFO
+      --verbosity <level>   One of (CRITICAL, ERROR, WARNING, INFO, DEBUG)
+                            Default is WARNING. For more info:
+                                https://docs.python.org/3/library/logging.html#logging-levels
+  -V, --version             Show the version and exit
 
 DESCRIPTION:
     Create an API client in your $language.
@@ -47,10 +50,14 @@ SEE ALSO:
 import sys
 import subprocess as sp
 import re
+import logging
+import os
 
 import docopt
 
 import codegen
+
+logger = logging.getLogger()
 
 
 def get_cli_args():
@@ -58,12 +65,51 @@ def get_cli_args():
     args = docopt.docopt(__doc__)
 
     if args['--lang'] or args['--spec']:
-        validate_targets(args)
+        if not os.path.exists('generated_clients'):
+            os.makedirs('generated_clients')
         args = correct_fuzzy_args(args)
+        set_log_level(args)
+        validate_targets(args)
+
         return args
     else:
         parse_cli_args(args)
         sys.exit()
+
+
+def set_log_level(args):
+    """Set the log level according to user supplied args."""
+    log_levels = {
+        'DEBUG': logging.DEBUG,
+        'INFO': logging.INFO,
+        'WARNING': logging.WARNING,
+        'ERROR': logging.ERROR,
+        'CRITICAL': logging.CRITICAL
+    }
+
+    formatter = logging.Formatter('%(asctime)s [%(module)s] '
+                                  '%(levelname)s %(message)s')
+    logging_out = logging.StreamHandler(sys.stdout)
+    logging_err = logging.StreamHandler(sys.stderr)
+    logging_out.setLevel(logging.WARNING)
+    logging_out.setLevel(logging.WARNING)
+    logging_out.setFormatter(formatter)
+    logging_err.setFormatter(formatter)
+    logger.addHandler(logging_out)
+    logger.addHandler(logging_err)
+
+    no_verbosity_selected = not args['--verbose'] and not args['--verbosity']
+    if no_verbosity_selected:
+        logger.setLevel(logging.WARNING)  # default
+    elif args['--verbose']:
+        logger.setLevel('INFO')
+    else:  # Some --verbosity <level> entered
+        if args['--verbosity'] in list(log_levels):
+            logger.setLevel(log_levels[args['--verbosity']])
+            logger.info('Setting verbosity to ' + args['--verbosity'])
+        else:
+            print('ERROR: Invalid verbosity level.')
+            sys.exit()
 
 
 def validate_targets(args):
@@ -75,7 +121,7 @@ def validate_targets(args):
             "\nInvalid entered languages: " + str(invalid_langs)
         raise SyntaxWarning(err_msg)
 
-    invalid_specs = set(args['--lang']).difference(set(codegen.__specs__))
+    invalid_specs = set(args['--spec']).difference(set(codegen.__specs__))
     if invalid_specs:
         err_msg = "Valid languages on system: " + str(codegen.__specs__) + \
             "\nInvalid entered languages: " + str(invalid_specs)
@@ -121,5 +167,6 @@ def get_openapi_generators():
     Returns (str):
         Several paragraph lists of languages that OpenAPI Generator supports.
     """
-    cmd_list = ['java', '-jar', 'openapi-generator-cli.jar']
-    return sp.check_output(cmd_list).decode('utf-8').strip()
+    cmd_list = ['java', '-jar', 'openapi-generator-cli.jar', 'list']
+    sp_pipe = sp.Popen(cmd_list, stdout=sp.PIPE, stderr=sp.STDOUT)
+    return sp_pipe.communicate()[0].decode('utf-8').strip()

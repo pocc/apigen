@@ -20,6 +20,11 @@ import subprocess as sp
 import os
 import urllib.error as urlerr
 import urllib.request as urlreq
+import logging
+
+import codegen.utils as utils
+
+logger = logging.getLogger(__name__)
 
 
 def download_openapi_generator():
@@ -29,8 +34,11 @@ def download_openapi_generator():
             jarfile = 'http://central.maven.org/maven2/org/openapitools/open' \
                       'api-generator-cli/3.3.4/openapi-generator-cli-3.3.4.jar'
             urlreq.urlretrieve(jarfile, 'openapi-generator-cli.jar')
+            logger.info('INFO: Successfully retrieved ' + jarfile)
         except urlerr.URLError:
             raise ConnectionError("An internet connection is required.")
+    else:
+        logger.info('Using cached openapi-generator-cli.jar')
 
 
 def generate_api_clients(langs, openapi_location):
@@ -40,10 +48,13 @@ def generate_api_clients(langs, openapi_location):
         langs (list): All of the user entered output options.
         openapi_location (str): Where the openapi json is stored.
     """
+    cmd_list = ['java', '-jar', 'openapi-generator-cli.jar', 'generate',
+                '-i', openapi_location]
     for lang in langs:
-        cmd_list = ['java', '-jar', 'openapi-generator-cli.jar', 'generate',
-                    '-i', openapi_location,
-                    '-g', lang,
-                    '-o', 'generated/' + lang]
-        result = sp.check_output(cmd_list)
-        print(result)
+        logger.info("Creating API client for " + lang)
+        cmd_list += ['-g', lang, '-o', 'generated_clients/' + lang]
+        result = sp.check_output(cmd_list).decode('utf-8')
+        utils.log_ext_program_output('openapi-generator-cli', result)
+
+    logger.info('Generated API clients for ' + str(langs) +
+                ' can be found in generated_clients/')
