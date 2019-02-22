@@ -34,7 +34,7 @@ PATH_PRIMITIVES = {
         'name': 'organizationId',
         'in': 'path',
         'description': 'Number that uniquely identifies an organization.'
-            '\n ↳ get_orgs()',
+                       '\n ↳ get_orgs()',
         'example': 212406,
         'schema': {
             'type': 'integer',
@@ -46,7 +46,7 @@ PATH_PRIMITIVES = {
         'name': 'networkId',
         'in': 'path',
         'description': 'String that uniquely identifies a network'
-            '\n ↳ get_networks_by_org_id(org_id)',
+                       '\n ↳ get_networks_by_org_id(org_id)',
         'example': 'N_24329156',
         'schema': {
             'type': 'string',
@@ -58,7 +58,7 @@ PATH_PRIMITIVES = {
         'name': 'adminId',
         'in': 'path',
         'description': 'Number that uniquely identifies an admin.'
-            '\n ↳  get_admins_by_org_id(org_id)',
+                       '\n ↳  get_admins_by_org_id(org_id)',
         'example': '545173',
         'schema': {
             'type': 'integer',
@@ -68,8 +68,8 @@ PATH_PRIMITIVES = {
     'srId': {
         'name': 'srId',
         'in': 'path',
-        'description': 'UUID of static route' 
-            '\n ↳ get_static_routes_by_network_id(network_id)',
+        'description': 'UUID of static route'
+                       '\n ↳ get_static_routes_by_network_id(network_id)',
         'example': 'd7fa4948-7921-4dfa-af6b-ae8b16c20c39',
         'schema': {
             'type': 'string',
@@ -81,7 +81,7 @@ PATH_PRIMITIVES = {
         'name': 'serial',
         'in': 'path',
         'description': 'All caps Meraki serial number.'
-            '\n ↳ get_devices_by_network_id(network_id)',
+                       '\n ↳ get_devices_by_network_id(network_id)',
         'example': 'Q234-ABCD-5678',
         'schema': {
             'type': 'string',
@@ -92,8 +92,8 @@ PATH_PRIMITIVES = {
     'namedTagScopeId': {
         'name': 'namedTagScopeId',
         'in': 'path',
-        'description': 'Tag SM scope ID'
-            '\n ↳ get_sm_named_tag_scopes_by_network_id(network_id, params)',
+        'description': 'Tag SM scope ID\n ↳ get_sm_named_'
+                       'tag_scopes_by_network_id(network_id, params)',
         'example': 1234,
         'schema': {
             'type': 'integer',
@@ -105,7 +105,7 @@ PATH_PRIMITIVES = {
         'name': 'userId',
         'in': 'path',
         'description': 'User ID used for SM'
-            '\n↳ get_sm_users_by_network_id(network_id, params)',
+                       '\n↳ get_sm_users_by_network_id(network_id, params)',
         'example': 1284392014819,
         'schema': {
             'type': 'integer',
@@ -117,7 +117,7 @@ PATH_PRIMITIVES = {
         'name': 'ssidNumber',
         'in': 'path',
         'description': 'Positional number of the SSID in the list'
-            '\n ↳ get_ssids_by_network_id(network_id)',
+                       '\n ↳ get_ssids_by_network_id(network_id)',
         'example': 2,
         'schema': {
             'type': 'integer',
@@ -130,7 +130,7 @@ PATH_PRIMITIVES = {
         'name': 'zoneId',
         'in': 'path',
         'description': 'Camera Analytics Zone ID'
-            '\n ↳ get_analytics_zones_by_serial(serial)',
+                       '\n ↳ get_analytics_zones_by_serial(serial)',
         'example': 1,
         'schema': {
             'type': 'integer',
@@ -141,8 +141,8 @@ PATH_PRIMITIVES = {
     'bluetoothClientId': {
         'name': 'bluetoothClientId',
         'in': 'path',
-        'description': 'Bluetooth MAC'
-            '\n ↳ get_bluetooth_clients_by_network_id(network_id, params)',
+        'description': 'Bluetooth MAC\n ↳ get_bluetooth_clients_'
+                       'by_network_id(network_id, params)',
         'example': '00:11:22:33:44:55',
         'schema': {
             'type': 'string',
@@ -164,7 +164,7 @@ PATH_PRIMITIVES = {
         'name': 'mac',
         'in': 'path',
         'description': 'Client MAC'
-            '\n ↳ get_clients_by_serial(serial, params)',
+                       '\n ↳ get_clients_by_serial(serial, params)',
         'example': '00:11:22:33:44:55',
         'schema': {
             'type': 'string',
@@ -188,9 +188,9 @@ PATH_PRIMITIVES = {
         'name': 'httpServerId',
         'in': 'path',
         'description': 'Webhook HTTP server ID. See '
-            'https://documentation.meraki.com/z'
-            'General_Administration/Other_Topics/Webhooks'
-            '\n ↳ get_http_servers_by_network_id(network_id)',
+                       'https://documentation.meraki.com/z'
+                       'General_Administration/Other_Topics/Webhooks'
+                       '\n ↳ get_http_servers_by_network_id(network_id)',
         'example': 'poke me',
         'schema': {
             'type': 'string',
@@ -201,9 +201,9 @@ PATH_PRIMITIVES = {
         'name': 'webhookTestId',
         'in': 'path',
         'description': 'ID of webhook test sent to your HTTP server. See'
-            'https://documentation.meraki.com/z'
-            'General_Administration/Other_Topics/Webhooks'
-            '\n ↳ create_http_servers_webhook_tests_by_network_id'
+                       'https://documentation.meraki.com/z'
+                       'General_Administration/Other_Topics/Webhooks'
+                       '\n ↳ create_http_servers_webhook_tests_by_network_id'
                        '(network_id, params)',
         'example': 'poke me',
         'schema': {
@@ -216,7 +216,7 @@ PATH_PRIMITIVES = {
         'in': 'path',
         'description': 'Splash or RADIUS user hash',
         'example': 'aGlAaGkuY29t'
-            '\n ↳ get_meraki_auth_users_by_network_id(network_id)',
+                   '\n ↳ get_meraki_auth_users_by_network_id(network_id)',
         'schema': {
             'type': 'string'
         },
@@ -259,7 +259,7 @@ PATH_PRIMITIVES = {
         'name': 'contactId',
         'in': 'path',
         'description': 'Phone contact ID'
-            '\n ↳ get_phone_assignments_by_network_id(network_id)',
+                       '\n ↳ get_phone_assignments_by_network_id(network_id)',
         'example': 823,
         'schema': {
             'type': 'integer'
@@ -282,7 +282,7 @@ PATH_PRIMITIVES = {
         'name': 'samlRoleId',
         'in': 'path',
         'description': 'ID unique to SAML User'
-            '\n ↳ get_saml_roles_by_org_id(org_id)',
+                       '\n ↳ get_saml_roles_by_org_id(org_id)',
         'example': 'TEdJIEN1c3RvbWVy',
         'schema': {
             'type': 'string'
@@ -293,7 +293,7 @@ PATH_PRIMITIVES = {
         'name': 'clientId',
         'in': 'path',
         'description': 'Client ID Hash'
-            '\n ↳ get_clients_by_serial(serial)',
+                       '\n ↳ get_clients_by_serial(serial)',
         'example': 'k74272e',
         'schema': {
             'type': 'string'
@@ -303,8 +303,8 @@ PATH_PRIMITIVES = {
     'profileId': {
         'name': 'profileId',
         'in': 'path',
-        'description': 'Cisco Clarity Profile ID'
-            '\n ↳ create_profile_clarity_by_network_id(network_id, params)',
+        'description': 'Cisco Clarity Profile ID\n ↳ create_profile_'
+                       'clarity_by_network_id(network_id, params)',
         'example': 12345,
         'schema': {
             'type': 'integer',
@@ -315,8 +315,8 @@ PATH_PRIMITIVES = {
     'appId': {
         'name': 'appId',
         'in': 'path',
-        'description': 'SM Cisco Polaris app ID'
-              '\n ↳ get_app_polaris_by_network_id(network_id, params)',
+        'description': 'SM Cisco Polaris app ID\n ↳ get_app_'
+                       'polaris_by_network_id(network_id, params)',
         'example': 123456,
         'schema': {
             'type': 'integer',
@@ -337,8 +337,8 @@ PATH_PRIMITIVES = {
     'service': {
         'name': 'service',
         'in': 'path',
-        'description': 'MX Services'
-            '\n ↳ get_firewalled_services_by_network_id(network_id)',
+        'description': 'MX Services\n ↳ get_firewalled_services_'
+                       'by_network_id(network_id)',
         'example': 'web',
         'schema': {
             'type': 'string',
@@ -350,7 +350,7 @@ PATH_PRIMITIVES = {
         'name': 'vlanId',
         'in': 'path',
         'description': 'VLAN number'
-            '\n ↳ get_vlans_by_network_id(network_id)',
+                       '\n ↳ get_vlans_by_network_id(network_id)',
         'example': 1234,
         'schema': {
             'type': 'integer',
@@ -395,124 +395,107 @@ PATH_PRIMITIVES = {
     }
 }
 
+
+def make_json_schema_call(call_name):
+    """Generate schema JSON as it is so common."""
+    return {
+        'application/json': {
+            'schema': {
+                '$ref': '#/components/schemas/' + call_name
+            }
+        }
+    }
+
+
 OPENAPI_STUB = {
-  "openapi": "3.0.0",
-  "info": {
-    "title": 'Generated Meraki API',
-    "description": "Generated from Meraki API Docs."
-                   "\n" + codegen.__project_url__,
-    "version": codegen.__version__,
-    "termsOfService": MERAKI_TERMS_OF_USE_URL,
-    "contact": {
-      "name": codegen.__author__,
-      "email": codegen.__contact__
-    },
-    "license": {
-      "name": codegen.__license__,
-      "url": codegen.__license_url__
-    }
-  },
-  "tags": [],
-  "servers": [
-    {
-      "url": "http://dashboard.meraki.com/api/{basePath}",
-      "variables": {
-        "basePath": {
-          "default": "v0",
-          "description": "Current version of the API"
-        }
-      }
-    }
-  ],
-  "security": [
-    {
-      "ApiKeyAuth": []
-    }
-  ],
-  "externalDocs": {
-    "description": "Find out more about Meraki API docs",
-    "url": "http://dashboard.meraki.com/api_docs"
-  },
-  'components': {
-    'responses': {
-      '301': {
-        'description': 'Permanent Redirect.',
-        'content': {
-          'application/json': {
-            'schema': {
-              '$ref': '#/components/schemas/Error'
-            }
-          }
-        }
-      },
-      '302': {
-        'description': 'Temporary Redirect.',
-        'content': {
-          'application/json': {
-            'schema': {
-              '$ref': '#/components/schemas/Error'
-            }
-          }
-        }
-      },
-      '400': {
-        'description': 'Bad request. Check input params.',
-        'content': {
-          'application/json': {
-            'schema': {
-              '$ref': '#/components/schemas/Error'
-            }
-          }
-        }
-      },
-      '404': {
-        'description': 'Resource not found',
-        'content': {
-          'application/json': {
-            'schema': {
-              '$ref': '#/components/schemas/Error'
-            }
-          }
-        }
-      },
-      '500': {
-        'description': 'Server error.',
-        'content': {
-          'application/json': {
-            'schema': {
-              '$ref': '#/components/schemas/Error'
-            }
-          }
-        }
-      }
-    },
-    'schemas': {
-      'Error': {
-        'type': 'object',
-        'properties': {
-          'code': {
-            'type': 'string'
-          },
-          'message': {
-            'type': 'string'
-          }
+    "openapi": "3.0.0",
+    "info": {
+        "title": 'Generated Meraki API',
+        "description": "Generated from Meraki API Docs."
+                       "\n" + codegen.__url__,
+        "version": codegen.__version__,
+        "termsOfService": MERAKI_TERMS_OF_USE_URL,
+        "contact": {
+            "name": codegen.__author__,
+            "email": codegen.__author_email__
         },
-        'required': [
-          'code',
-          'message'
-        ]
-      },
-      # POST /networks/{networkId}/unbind returns a network dict, so redirect
-      'Unbind': {
-        '$ref': '#/components/schemas/Networks'
-      }
+        "license": {
+            "name": codegen.__license__,
+            "url": codegen.__license_url__
+        }
     },
-    'securitySchemes': {
-      "ApiKeyAuth": {
-        "type": "apiKey",
-        "in": "header",
-        "name": "X-Cisco-Meraki-API-Key"
-      }
+    "tags": [],
+    "servers": [
+        {
+            "url": "http://dashboard.meraki.com/api/{basePath}",
+            "variables": {
+                "basePath": {
+                    "default": "v0",
+                    "description": "Current version of the API"
+                }
+            }
+        }
+    ],
+    "security": [
+        {
+            "ApiKeyAuth": []
+        }
+    ],
+    "externalDocs": {
+        "description": "Find out more about Meraki API docs",
+        "url": "http://dashboard.meraki.com/api_docs"
+    },
+    'components': {
+        'responses': {
+            '301': {
+                'description': 'Permanent Redirect.',
+                'content': make_json_schema_call('Error')
+            },
+            '302': {
+                'description': 'Temporary Redirect.',
+                'content': make_json_schema_call('Error')
+            },
+            '400': {
+                'description': 'Bad request. Check input params.',
+                'content': make_json_schema_call('Error')
+            },
+            '404': {
+                'description': 'Resource not found',
+                'content': make_json_schema_call('Error')
+            },
+            '500': {
+                'description': 'Server error.',
+                'content': make_json_schema_call('Error')
+            }
+        },
+        'schemas': {
+            'Error': {
+                'type': 'object',
+                'properties': {
+                    'code': {
+                        'type': 'string'
+                    },
+                    'message': {
+                        'type': 'string'
+                    }
+                },
+                'required': [
+                    'code',
+                    'message'
+                ]
+            },
+            # POST /networks/{networkId}/unbind
+            # Returns a network dict so redirect to appropriate schema
+            'Unbind': {
+                '$ref': '#/components/schemas/Networks'
+            }
+        },
+        'securitySchemes': {
+            "ApiKeyAuth": {
+                "type": "apiKey",
+                "in": "header",
+                "name": "X-Cisco-Meraki-API-Key"
+            }
+        }
     }
-  }
 }

@@ -13,16 +13,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Main function."""
-import subprocess as sp
-import re
 import logging
+import re
+import subprocess as sp
 
 import codegen._cli as cli
 import codegen.make_api_client as api_client
 import codegen.make_openapi3_json as openapi3
 import codegen.make_postman as postman
 
-logger = logging.getLogger(__name__)
+LOGGER = logging.getLogger(__name__)
 
 
 def main():
@@ -41,12 +41,12 @@ def main():
 
 def check_requirements():
     """Check the requirements
-    
+
     Requirements:
         * java >= 1.8
     """
     check_java_version()
-    logger.info(' ✓ java >= 1.8 satisfied.')
+    LOGGER.info(' ✓ java >= 1.8 satisfied.')
 
 
 def check_java_version():
@@ -64,7 +64,7 @@ def get_java_version():
     if 'version' not in version_text:
         raise Exception("Java not found. Reinstall and try again.")
     version = re.search(r'"([\d]*\.[\d]*)\.[\d]*_', str(version_text))[1]
-    
+
     return float(version)
 
 

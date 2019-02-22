@@ -37,31 +37,55 @@ Example generated JSON:
 """
 import json
 import re
-import webbrowser
 import tempfile
+import webbrowser
 
 import inflection as inf
 
-import codegen._web as web
-import codegen._vars as _vars
-import codegen.utils as utils
 import codegen
+import codegen._vars as _vars
+import codegen._web as web
+import codegen.utils as utils
+
+
+def make_spec(save_locally):
+    """Main function for the converter.
+
+    Args:
+        save_locally (bool): Whether to save the openapi json locally
+            or in a temp folder.
+    Returns (str):
+        Path to generated to OpenAPI3 JSON file
+    """
+    api_docs = web.fetch_apidocs_json()
+
+    all_openapi_dict = _vars.OPENAPI_STUB
+    all_openapi_dict['paths'], gen_schemas = generate_path_dicts(api_docs)
+    all_schemas = {**all_openapi_dict['components']['schemas'], **gen_schemas}
+    all_openapi_dict['components']['schemas'] = all_schemas
+
+    openapi_json_text = json.dumps(all_openapi_dict, indent=2, sort_keys=True)
+    generated_filepath = save_openapi_json(openapi_json_text, save_locally)
+
+    return generated_filepath
 
 
 def generate_path_dicts(api_docs):
-    """Get the paths from the Meraki API docs JSON."""
+    """OpenAPI3 has a specifiec syntaxt for "paths": {}. Generate this.
+
+    For more information, reference
+        https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.0.md#pathsObject
+
+    Args:
+        api_docs (dict): The API Docs JSON previously retrieved.
+    Returns:
+
+    """
     paths = {}
     all_schemas = {}
     operation_ids = []
-    all_api_calls = []
-    for section in api_docs:
-        for api_call in api_docs[section]:
-            all_api_calls += [api_call]
-            # Add 2 API calls if there are 2 paths.
-            if api_call['alternate_path']:
-                alt_api_call = dict(api_call)
-                alt_api_call['path'] = alt_api_call['alternate_path']
-                all_api_calls += [alt_api_call]
+    # Add alternate paths to the paths list.
+    all_api_calls = append_alternate_paths(api_docs)
 
     for api_call in all_api_calls:
         method = api_call['http_method'].lower()
@@ -84,13 +108,33 @@ def generate_path_dicts(api_docs):
     return paths, all_schemas
 
 
+def append_alternate_paths(api_docs):
+    """Add alternative paths to paths list.
+
+    Args:
+        api_docs (dict): API docs dict previously generated.
+    Returns (list):
+        List of all path dicts that contain all required variables for parsing.
+    """
+    all_api_calls = []
+    for section in api_docs:
+        for api_call in api_docs[section]:
+            all_api_calls += [api_call]
+            # Add 2 API calls if there are 2 paths.
+            if api_call['alternate_path']:
+                alt_api_call = dict(api_call)
+                alt_api_call['path'] = alt_api_call['alternate_path']
+                all_api_calls += [alt_api_call]
+
+    return all_api_calls
+
+
 def get_apicall_dict(api_call):
     """Get the api call JSON that is.
 
     This article was used for response syntax:
         https://swagger.io/docs/specification/describing-responses/
     """
-    path_primitives = _vars.PATH_PRIMITIVES
     openapi_path = re.sub(r'[\[\{].*?[\}\]]', '{{{}}}', api_call['path'])
     schemas = {}
 
@@ -116,19 +160,32 @@ def get_apicall_dict(api_call):
         }
     }
 
+    apicall_json = add_success_schemas_to_apicall(
+        api_call, apicall_json, apicall_success, last_non_param_word)
+    schemas = add_query_params_to_schemas(
+        api_call, schemas, last_non_param_word)
+    path_params = get_path_params(api_call['path'])
+    apicall_json['parameters'] = append_path_params(path_params)
+    if path_params:
+        last_param = path_params[-1]
+        captialized_last_param = last_param[0].upper() + last_param[1:]
+        apicall_json['operationId'] += 'By' + captialized_last_param
+
+    openapi_path = openapi_path.format(*path_params)
+
+    return openapi_path, schemas, apicall_json
+
+
+def add_success_schemas_to_apicall(api_call, apicall_json,
+                                   apicall_success, last_non_param_word):
+    """Generate the success schema to be added to components."""
     # POST /networks/{networkId}/devices/{serial}/remove returns 204 wrongly
     has_put_post_success = apicall_success in ['200', '201']
     if api_call['http_method'] in ['PUT', 'POST'] and has_put_post_success:
-        apicall_json['responses'][apicall_success]['content'] = {
-            'application/json': {
-                'schema': {
-                    '$ref': '#/components/schemas/' + last_non_param_word
-                }
-            }
-        }
+        apicall_json['responses'][apicall_success]['content'] = \
+            _vars.make_json_schema_call(last_non_param_word)
 
     elif api_call['http_method'] == 'GET' and apicall_success == '200':
-        pass
         # Assuming that it's fine to skip providing a response schema for gets
         """
         array_schema_name = 'ArrayOf' + last_non_param_word
@@ -139,7 +196,7 @@ def get_apicall_dict(api_call):
                 }
             }
         }
-        
+
         schemas[array_schema_name] = {
             'type': 'array',
             'items': {
@@ -151,10 +208,15 @@ def get_apicall_dict(api_call):
         if last_non_param_word not in schemas:
             schemas[last_non_param_word] = {
                 'type': 'string',
-                'properties': 
+                'properties':
             }
         """
 
+    return apicall_json
+
+
+def add_query_params_to_schemas(api_call, schemas, last_non_param_word):
+    """Get the query params and add them to #/components/schemas."""
     has_query_params = 'params' in api_call and api_call['params']
     if has_query_params:
         all_params = [param['name'] for param in api_call['params']]
@@ -169,7 +231,7 @@ def get_apicall_dict(api_call):
             nested = 'params' in param_dict
             if nested:
                 nested_params = [param for param in param_dict['params']]
-                nested_params_names =[param['name'] for param in nested_params]
+                nested_param_names = [param['name'] for param in nested_params]
                 nested_params_dict = {}
                 for np_index, nested_param in enumerate(nested_params):
                     nested_param_dict = param_dict['params'][np_index]
@@ -186,7 +248,7 @@ def get_apicall_dict(api_call):
                 }
                 schemas[param] = {
                     'type': 'object',
-                    'required': nested_params_names,
+                    'required': nested_param_names,
                     'properties': nested_params_dict
                 }
             else:
@@ -195,26 +257,7 @@ def get_apicall_dict(api_call):
                     'description': param_dict['description']
                 }
 
-    path_params = get_path_params(api_call['path'])
-    for path_param in path_params:
-        if path_param not in path_primitives:
-            issue = utils.GithubIssues()
-            is_issue_required = issue.check_issue(path_param)
-            if is_issue_required:
-                message = "Press i & return to submit an issue on Github." + \
-                          "\nPress return to continue."
-                if input(message).lower() == 'i':
-                    webbrowser.open(codegen.__issues_url__ + '/new')
-
-        apicall_json['parameters'] += [path_primitives[path_param]]
-    if path_params:
-        last_param = path_params[-1]
-        captialized_last_param = last_param[0].upper() + last_param[1:]
-        apicall_json['operationId'] += 'By' + captialized_last_param
-
-    openapi_path = openapi_path.format(*path_params)
-
-    return openapi_path, schemas, apicall_json
+    return schemas
 
 
 def get_path_params(api_call_path):
@@ -232,22 +275,27 @@ def get_path_params(api_call_path):
     return path_params
 
 
-def make_spec(save_locally):
-    """Main function for the converter.
+def append_path_params(path_params):
+    """Add the 'parameters' field to each path."""
+    path_primitives = _vars.PATH_PRIMITIVES
+    parameters = []
+    for path_param in path_params:
+        if path_param not in path_primitives:
+            issue = utils.GithubIssues()
+            is_issue_required = issue.check_issue(path_param)
+            if is_issue_required:
+                message = "Press i & return to submit an issue on Github." + \
+                          "\nPress return to continue."
+                if input(message).lower() == 'i':
+                    webbrowser.open(codegen.__issues_url__ + '/new')
 
-    Args:
-        save_locally (bool): Whether to save the openapi json locally
-            or in a temp folder.
-    """
-    api_docs = web.fetch_apidocs_json()
+        parameters += [path_primitives[path_param]]
 
-    all_openapi_dict = _vars.OPENAPI_STUB
-    all_openapi_dict['paths'], gen_schemas = generate_path_dicts(api_docs)
-    all_schemas = {**all_openapi_dict['components']['schemas'], **gen_schemas}
-    all_openapi_dict['components']['schemas'] = all_schemas
+    return parameters
 
-    openapi_json_text = json.dumps(all_openapi_dict, indent=2, sort_keys=True)
 
+def save_openapi_json(openapi_json_text, save_locally):
+    """Actually save the generated OpenAPI json text."""
     filename = 'openapi3.json'
     if save_locally:
         filename = 'generated_clients/' + filename

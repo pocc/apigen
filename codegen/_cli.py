@@ -47,17 +47,17 @@ DESCRIPTION:
 SEE ALSO:
   OpenAPI Generator: https://github.com/OpenAPITools/openapi-generator
 """
-import sys
-import subprocess as sp
-import re
 import logging
 import os
+import re
+import subprocess as sp
+import sys
 
 import docopt
 
 import codegen
 
-logger = logging.getLogger()
+LOGGER = logging.getLogger()
 
 
 def get_cli_args():
@@ -72,9 +72,9 @@ def get_cli_args():
         validate_targets(args)
 
         return args
-    else:
-        parse_cli_args(args)
-        sys.exit()
+
+    parse_cli_args(args)
+    sys.exit()
 
 
 def set_log_level(args):
@@ -95,18 +95,19 @@ def set_log_level(args):
     logging_out.setLevel(logging.WARNING)
     logging_out.setFormatter(formatter)
     logging_err.setFormatter(formatter)
-    logger.addHandler(logging_out)
-    logger.addHandler(logging_err)
+    LOGGER.addHandler(logging_out)
+    LOGGER.addHandler(logging_err)
 
     no_verbosity_selected = not args['--verbose'] and not args['--verbosity']
     if no_verbosity_selected:
-        logger.setLevel(logging.WARNING)  # default
+        LOGGER.setLevel(logging.WARNING)  # default
     elif args['--verbose']:
-        logger.setLevel('INFO')
+        LOGGER.setLevel('INFO')
     else:  # Some --verbosity <level> entered
         if args['--verbosity'] in list(log_levels):
-            logger.setLevel(log_levels[args['--verbosity']])
-            logger.info('Setting verbosity to ' + args['--verbosity'])
+            LOGGER.setLevel(log_levels[args['--verbosity']])
+            log_msg = 'Setting verbosity to ' + args['--verbosity']
+            LOGGER.info(log_msg)
         else:
             print('ERROR: Invalid verbosity level.')
             sys.exit()

@@ -13,16 +13,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """File a github issue."""
-import http.client
-import json
-import re
 import datetime
 import distutils.version as versioning
+import http.client
+import json
 import logging
+import re
 
 import codegen
 
-logger = logging.getLogger(__name__)
+LOGGER = logging.getLogger(__name__)
 
 
 class GithubIssues:
@@ -92,5 +92,5 @@ def log_ext_program_output(program_name, program_output):
     program_output = program_output.replace('\n\n', '\n')
     formatted_text = re.sub(r'\n([\S ])', output_line_start + '\\1',
                             program_output)
-    logger.debug('`' + program_name + '` STDOUT >' +
+    LOGGER.debug('`' + program_name + '` STDOUT >' +
                  output_line_start + formatted_text)

@@ -278,42 +278,6 @@
   "Bluetooth clients": [
     {
       "http_method": "GET",
-      "path": "/networks/[networkId]/bluetoothClients",
-      "alternate_path": null,
-      "sample_req": "curl -L -H 'X-Cisco-Meraki-API-Key: <key>' -H 'Content-Type: application/json' -X GET 'https://api.meraki.com/api/v0/networks/[networkId]/bluetoothClients?timespan=7200'",
-      "sample_resp": "[\n  {\n    \"mac\": \"00:11:22:33:44:55\",\n    \"networkId\": \"N_24329156\"\n  }\n]",
-      "description": "List the Bluetooth clients seen by APs in this network",
-      "params": [
-        {
-          "name": "timespan",
-          "description": "The timespan, in seconds, used to look back from now for bluetooth clients",
-          "is_array": false
-        },
-        {
-          "name": "includeConnectivityHistory",
-          "description": "Include the connectivity history for this client",
-          "is_array": false
-        },
-        {
-          "name": "perPage",
-          "description": "The number of entries per page returned",
-          "is_array": false
-        },
-        {
-          "name": "startingAfter",
-          "description": "A token used by the server to indicate the start of the page. Often this is a timestamp or an ID but it is not limited to those. This parameter should not be defined by client applications. The link for the first, last, next or prev page in the HTTP Link header should define it.",
-          "is_array": false
-        },
-        {
-          "name": "endingBefore",
-          "description": "A token used by the server to indicate the end of the page. Often this is a timestamp or an ID but it is not limited to those. This parameter should not be defined by client applications. The link for the first, last, next or prev page in the HTTP Link header should define it.",
-          "is_array": false
-        }
-      ],
-      "successful_http_status": 200
-    },
-    {
-      "http_method": "GET",
       "path": "/networks/[networkId]/bluetoothClients/[id]",
       "alternate_path": null,
       "sample_req": "curl -L -H 'X-Cisco-Meraki-API-Key: <key>' -H 'Content-Type: application/json' -X GET 'https://api.meraki.com/api/v0/networks/[networkId]/bluetoothClients/[id]'",
@@ -332,6 +296,37 @@
         }
       ],
       "successful_http_status": 200
+    },
+    {
+      "http_method": "GET",
+      "description": "List the Bluetooth clients seen by APs in this network",
+      "path": "/networks/{networkId}/bluetoothClients",
+      "alternate_path": null,
+      "successful_http_status": 200,
+      "params": [
+        {
+          "name": "perPage",
+          "description": "The number of entries per page returned. Acceptable range is 5 - 1000. Default is 10."
+        },
+        {
+          "name": "startingAfter",
+          "description": "A token used by the server to indicate the start of the page. Often this is a timestamp or an ID but it is not limited to those. This parameter should not be defined by client applications. The link for the first, last, prev, or next page in the HTTP Link header should define it."
+        },
+        {
+          "name": "endingBefore",
+          "description": "A token used by the server to indicate the end of the page. Often this is a timestamp or an ID but it is not limited to those. This parameter should not be defined by client applications. The link for the first, last, prev, or next page in the HTTP Link header should define it."
+        },
+        {
+          "name": "timespan",
+          "description": "The timespan, in seconds, used to look back from now for bluetooth clients"
+        },
+        {
+          "name": "includeConnectivityHistory",
+          "description": "Include the connectivity history for this client"
+        }
+      ],
+      "sample_req": "curl -L -H 'X-Cisco-Meraki-API-Key: <key>' -H 'Content-Type: application/json' -X GET 'https://api.meraki.com/api/v0/networks/{networkId}/bluetoothClients'",
+      "sample_resp": "{\n  \"mac\": \"00:11:22:33:44:55\",\n  \"networkId\": \"N_24329156\"\n}"
     }
   ],
   "Cameras": [
@@ -371,9 +366,9 @@
     },
     {
       "http_method": "GET",
-      "path": "/networks/[networkId]/clients/[id_or_mac_or_ip]",
+      "path": "/networks/[networkId]/clients/[idOrMacOrIp]",
       "alternate_path": null,
-      "sample_req": "curl -L -H 'X-Cisco-Meraki-API-Key: <key>' -H 'Content-Type: application/json' -X GET 'https://api.meraki.com/api/v0/networks/[networkId]/clients/[id_or_mac_or_ip]'",
+      "sample_req": "curl -L -H 'X-Cisco-Meraki-API-Key: <key>' -H 'Content-Type: application/json' -X GET 'https://api.meraki.com/api/v0/networks/[networkId]/clients/[idOrMacOrIp]'",
       "sample_resp": "{\n  \"id\": \"k74272e\",\n  \"description\": \"Miles's phone\",\n  \"mdnsName\": \"Miles's phone\",\n  \"dhcpHostname\": \"MilesPhone\",\n  \"mac\": \"00:11:22:33:44:55\",\n  \"ip\": \"1.2.3.4\",\n  \"vlan\": \"255\",\n  \"switchport\": null,\n  \"ip6\": \"\",\n  \"firstSeen\": 1518365681,\n  \"lastSeen\": 1526087474,\n  \"manufacturer\": \"Apple\",\n  \"os\": \"iOS\",\n  \"user\": \"null\",\n  \"ssid\": \"My SSID\",\n  \"wirelessCapabilities\": \"802.11ac - 2.4 and 5 GHz\",\n  \"smInstalled\": true,\n  \"recentDeviceMac\": \"00:11:22:33:44:55\",\n  \"clientVpnConnections\": [\n    {\n      \"remoteIp\": \"1.2.3.4\",\n      \"connectedAt\": 1522613355,\n      \"disconnectedAt\": 1522613360\n    }\n  ],\n  \"lldp\": [\n    [\n      \"System name\",\n      \"Some system name\"\n    ],\n    [\n      \"System description\",\n      \"Some system description\"\n    ],\n    [\n      \"Port ID\",\n      \"1\"\n    ],\n    [\n      \"Chassis ID\",\n      \"00:18:0a:00:00:00\"\n    ],\n    [\n      \"Port description\",\n      \"eth0\"\n    ],\n    [\n      \"System capabilities\",\n      \"Two-port MAC Relay\"\n    ]\n  ],\n  \"cdp\": null\n}",
       "description": "Return the client associated with the given identifier. This endpoint will lookup by client ID or either the MAC or IP depending on whether the network uses Track-by-IP.",
       "params": null,
@@ -412,90 +407,12 @@
     },
     {
       "http_method": "GET",
-      "path": "/networks/[networkId]/clients/[id_or_mac_or_ip]/usageHistory",
+      "path": "/networks/[networkId]/clients/[idOrMacOrIp]/usageHistory",
       "alternate_path": null,
-      "sample_req": "curl -L -H 'X-Cisco-Meraki-API-Key: <key>' -H 'Content-Type: application/json' -X GET 'https://api.meraki.com/api/v0/networks/[networkId]/clients/[id_or_mac_or_ip]/usageHistory'",
+      "sample_req": "curl -L -H 'X-Cisco-Meraki-API-Key: <key>' -H 'Content-Type: application/json' -X GET 'https://api.meraki.com/api/v0/networks/[networkId]/clients/[idOrMacOrIp]/usageHistory'",
       "sample_resp": "[\n  {\n    \"sent\": 500,\n    \"received\": 680,\n    \"ts\": 1518365681\n  }\n]",
       "description": "Return the client's daily usage history. Usage data is in kilobytes.",
       "params": null,
-      "successful_http_status": 200
-    },
-    {
-      "http_method": "GET",
-      "path": "/networks/[networkId]/clients/[id_or_mac_or_ip]/trafficHistory",
-      "alternate_path": null,
-      "sample_req": "curl -L -H 'X-Cisco-Meraki-API-Key: <key>' -H 'Content-Type: application/json' -X GET 'https://api.meraki.com/api/v0/networks/[networkId]/clients/[id_or_mac_or_ip]/trafficHistory'",
-      "sample_resp": "[\n  {\n    \"ts\": 1518365681,\n    \"application\": \"Google\",\n    \"destination\": \"www.google.com\",\n    \"protocol\": \"UDP\",\n    \"port\": 443,\n    \"recv\": 383,\n    \"sent\": 56,\n    \"numFlows\": 5,\n    \"activeSeconds\": 240\n  }\n]",
-      "description": "Return the client's network traffic data over time. Usage data is in kilobytes. This endpoint requires detailed traffic analysis to be enabled on the Network-wide > General page.",
-      "params": [
-        {
-          "name": "perPage",
-          "description": "The number of entries per page returned",
-          "is_array": false
-        },
-        {
-          "name": "startingAfter",
-          "description": "A token used by the server to indicate the start of the page. Often this is a timestamp or an ID but it is not limited to those. This parameter should not be defined by client applications. The link for the first, last, next or prev page in the HTTP Link header should define it.",
-          "is_array": false
-        },
-        {
-          "name": "endingBefore",
-          "description": "A token used by the server to indicate the end of the page. Often this is a timestamp or an ID but it is not limited to those. This parameter should not be defined by client applications. The link for the first, last, next or prev page in the HTTP Link header should define it.",
-          "is_array": false
-        }
-      ],
-      "successful_http_status": 200
-    },
-    {
-      "http_method": "GET",
-      "path": "/networks/[networkId]/clients/[id_or_mac_or_ip]/events",
-      "alternate_path": null,
-      "sample_req": "curl -L -H 'X-Cisco-Meraki-API-Key: <key>' -H 'Content-Type: application/json' -X GET 'https://api.meraki.com/api/v0/networks/[networkId]/clients/[id_or_mac_or_ip]/events'",
-      "sample_resp": "[\n  {\n    \"deviceSerial\": \"Q234-ABCD-5678\",\n    \"occurredAt\": 1518365681,\n    \"type\": \"l3roaming_assoc_start\",\n    \"details\": {\n      \"vap\": \"1\",\n      \"on_packet\": \"true\"\n    }\n  }\n]",
-      "description": "Return the events associated with this client.",
-      "params": [
-        {
-          "name": "perPage",
-          "description": "The number of entries per page returned",
-          "is_array": false
-        },
-        {
-          "name": "startingAfter",
-          "description": "A token used by the server to indicate the start of the page. Often this is a timestamp or an ID but it is not limited to those. This parameter should not be defined by client applications. The link for the first, last, next or prev page in the HTTP Link header should define it.",
-          "is_array": false
-        },
-        {
-          "name": "endingBefore",
-          "description": "A token used by the server to indicate the end of the page. Often this is a timestamp or an ID but it is not limited to those. This parameter should not be defined by client applications. The link for the first, last, next or prev page in the HTTP Link header should define it.",
-          "is_array": false
-        }
-      ],
-      "successful_http_status": 200
-    },
-    {
-      "http_method": "GET",
-      "path": "/networks/[networkId]/clients/[id_or_mac_or_ip]/latencyHistory",
-      "alternate_path": null,
-      "sample_req": "curl -L -H 'X-Cisco-Meraki-API-Key: <key>' -H 'Content-Type: application/json' -X GET 'https://api.meraki.com/api/v0/networks/[networkId]/clients/[id_or_mac_or_ip]/latencyHistory?timespan=7200'",
-      "sample_resp": "(empty)",
-      "description": "Return the latency history for a client. The latency data is from a sample of 2% of packets and is grouped into 4 traffic categories: background, best effort, video, voice. Within these categories the sampled packet counters are bucketed by latency in milliseconds.",
-      "params": [
-        {
-          "name": "timespan",
-          "description": "The timespan in seconds for the data",
-          "is_array": false
-        },
-        {
-          "name": "t0",
-          "description": "The start time, in seconds from epoch, for the data",
-          "is_array": false
-        },
-        {
-          "name": "t1",
-          "description": "The end time, in seconds from epoch, for the data",
-          "is_array": false
-        }
-      ],
       "successful_http_status": 200
     },
     {
@@ -572,6 +489,79 @@
         }
       ],
       "successful_http_status": 200
+    },
+    {
+      "http_method": "GET",
+      "description": "Return the client's network traffic data over time. Usage data is in kilobytes. This endpoint requires detailed traffic analysis to be enabled on the Network-wide > General page.",
+      "path": "/networks/{networkId}/clients/{idOrMacOrIp}/trafficHistory",
+      "alternate_path": null,
+      "successful_http_status": 200,
+      "params": [
+        {
+          "name": "perPage",
+          "description": "The number of entries per page returned. Acceptable range is 3 - 1000."
+        },
+        {
+          "name": "startingAfter",
+          "description": "A token used by the server to indicate the start of the page. Often this is a timestamp or an ID but it is not limited to those. This parameter should not be defined by client applications. The link for the first, last, prev, or next page in the HTTP Link header should define it."
+        },
+        {
+          "name": "endingBefore",
+          "description": "A token used by the server to indicate the end of the page. Often this is a timestamp or an ID but it is not limited to those. This parameter should not be defined by client applications. The link for the first, last, prev, or next page in the HTTP Link header should define it."
+        }
+      ],
+      "sample_req": "curl -L -H 'X-Cisco-Meraki-API-Key: <key>' -H 'Content-Type: application/json' -X GET 'https://api.meraki.com/api/v0/networks/{networkId}/clients/{idOrMacOrIp}/trafficHistory'",
+      "sample_resp": "[\n  {\n    \"ts\": 1518365681,\n    \"application\": \"Google\",\n    \"destination\": \"www.google.com\",\n    \"protocol\": \"UDP\",\n    \"port\": 443,\n    \"recv\": 383,\n    \"sent\": 56,\n    \"numFlows\": 5,\n    \"activeSeconds\": 240\n  }\n]"
+    },
+    {
+      "http_method": "GET",
+      "description": "Return the events associated with this client",
+      "path": "/networks/{networkId}/clients/{idOrMacOrIp}/events",
+      "alternate_path": null,
+      "successful_http_status": 200,
+      "params": [
+        {
+          "name": "perPage",
+          "description": "The number of entries per page returned. Acceptable range is 3 - 100. Default is 100."
+        },
+        {
+          "name": "startingAfter",
+          "description": "A token used by the server to indicate the start of the page. Often this is a timestamp or an ID but it is not limited to those. This parameter should not be defined by client applications. The link for the first, last, prev, or next page in the HTTP Link header should define it."
+        },
+        {
+          "name": "endingBefore",
+          "description": "A token used by the server to indicate the end of the page. Often this is a timestamp or an ID but it is not limited to those. This parameter should not be defined by client applications. The link for the first, last, prev, or next page in the HTTP Link header should define it."
+        }
+      ],
+      "sample_req": "curl -L -H 'X-Cisco-Meraki-API-Key: <key>' -H 'Content-Type: application/json' -X GET 'https://api.meraki.com/api/v0/networks/{networkId}/clients/{idOrMacOrIp}/events'",
+      "sample_resp": "[\n  {\n    \"deviceSerial\": \"Q234-ABCD-5678\",\n    \"occurredAt\": 1518365681,\n    \"type\": \"l3roaming_assoc_start\",\n    \"details\": {\n      \"vap\": \"1\",\n      \"on_packet\": \"true\"\n    }\n  }\n]"
+    },
+    {
+      "http_method": "GET",
+      "description": "Return the latency history for a client. The latency data is from a sample of 2% of packets and is grouped into 4 traffic categories: background, best effort, video, voice. Within these categories the sampled packet counters are bucketed by latency in milliseconds.",
+      "path": "/networks/{networkId}/clients/{idOrMacOrIp}/latencyHistory",
+      "alternate_path": null,
+      "successful_http_status": 200,
+      "params": [
+        {
+          "name": "t0",
+          "description": "The beginning of the timespan for the data. The maximum lookback period is 26 months from today."
+        },
+        {
+          "name": "t1",
+          "description": "The end of the timespan for the data. t1 can be a maximum of 26 months after t0."
+        },
+        {
+          "name": "timespan",
+          "description": "The timespan for which the information will be fetched. If specifying timespan, do not specify parameters t0 and t1. The value must be in seconds and be less than or equal to 67392000. The default is 86400."
+        },
+        {
+          "name": "resolution",
+          "description": "The time resolution in seconds for returned data. The valid resolutions are: 86400. The default is 86400."
+        }
+      ],
+      "sample_req": "curl -L -H 'X-Cisco-Meraki-API-Key: <key>' -H 'Content-Type: application/json' -X GET 'https://api.meraki.com/api/v0/networks/{networkId}/clients/{idOrMacOrIp}/latencyHistory?timespan=7200'",
+      "sample_resp": "[\n  {\n    \"t0\": 1550534400,\n    \"t1\": 1550620800,\n    \"latencyBinsByCategory\": {\n      \"backgroundTraffic\": {\n        \"0.5\": 41750,\n        \"1.0\": 21552,\n        \"2.0\": 59940,\n        \"4.0\": 146622,\n        \"8.0\": 57354,\n        \"16.0\": 0,\n        \"32.0\": 9954,\n        \"64.0\": 0,\n        \"128.0\": 0,\n        \"256.0\": 1896,\n        \"512.0\": 0,\n        \"1024.0\": 0,\n        \"2048.0\": 0\n      },\n      \"bestEffortTraffic\": {\n        \"0.5\": 1840899,\n        \"1.0\": 1644506,\n        \"2.0\": 629958,\n        \"4.0\": 449564,\n        \"8.0\": 2009658,\n        \"16.0\": 1329568,\n        \"32.0\": 282168,\n        \"64.0\": 97573,\n        \"128.0\": 191977,\n        \"256.0\": 30560,\n        \"512.0\": 26032,\n        \"1024.0\": 4943,\n        \"2048.0\": 12072\n      },\n      \"videoTraffic\": {\n        \"0.5\": 0,\n        \"1.0\": 0,\n        \"2.0\": 0,\n        \"4.0\": 0,\n        \"8.0\": 0,\n        \"16.0\": 0,\n        \"32.0\": 0,\n        \"64.0\": 0,\n        \"128.0\": 0,\n        \"256.0\": 0,\n        \"512.0\": 0,\n        \"1024.0\": 0,\n        \"2048.0\": 0\n      },\n      \"voiceTraffic\": {\n        \"0.5\": 716,\n        \"1.0\": 948,\n        \"2.0\": 474,\n        \"4.0\": 78,\n        \"8.0\": 0,\n        \"16.0\": 0,\n        \"32.0\": 0,\n        \"64.0\": 0,\n        \"128.0\": 0,\n        \"256.0\": 0,\n        \"512.0\": 0,\n        \"1024.0\": 0,\n        \"2048.0\": 0\n      }\n    }\n  }\n]"
     }
   ],
   "Config templates": [
@@ -697,7 +687,7 @@
           "is_array": false
         }
       ],
-      "successful_http_status": 201
+      "successful_http_status": 200
     },
     {
       "http_method": "POST",
@@ -733,14 +723,6 @@
       "successful_http_status": 200,
       "params": [
         {
-          "name": "uplink",
-          "description": "The WAN uplink used to obtain the requested stats. Valid uplinks are wan1, wan2. The default is wan1."
-        },
-        {
-          "name": "ip",
-          "description": "The destination IP used to obtain the requested stats. This is required."
-        },
-        {
           "name": "t0",
           "description": "The beginning of the timespan for the data. The maximum lookback period is 12 months from today."
         },
@@ -755,6 +737,14 @@
         {
           "name": "resolution",
           "description": "The time resolution in seconds for returned data. The valid resolutions are: 60, 600, 3600, 86400. The default is 60."
+        },
+        {
+          "name": "uplink",
+          "description": "The WAN uplink used to obtain the requested stats. Valid uplinks are wan1, wan2. The default is wan1."
+        },
+        {
+          "name": "ip",
+          "description": "The destination IP used to obtain the requested stats. This is required."
         }
       ],
       "sample_req": "curl -L -H 'X-Cisco-Meraki-API-Key: <key>' -H 'Content-Type: application/json' -X GET 'https://api.meraki.com/api/v0/networks/{networkId}/devices/{serial}/lossAndLatencyHistory?uplink=wan1&ip=1.2.3.4&timespan=7200'",
@@ -1804,6 +1794,25 @@
         }
       ],
       "successful_http_status": 200
+    },
+    {
+      "http_method": "GET",
+      "description": "Return the uplink loss and latency for every MX in the organization from 2 - 7 minutes ago",
+      "path": "/organizations/{organizationId}/uplinksLossAndLatency",
+      "alternate_path": null,
+      "successful_http_status": 200,
+      "params": [
+        {
+          "name": "uplink",
+          "description": "Optional filter for a specific WAN uplink. Valid uplinks are wan1, wan2. Default will return all uplinks."
+        },
+        {
+          "name": "ip",
+          "description": "Optional filter for a specific destination IP. Default will return all destination IPs."
+        }
+      ],
+      "sample_req": "curl -L -H 'X-Cisco-Meraki-API-Key: <key>' -H 'Content-Type: application/json' -X GET 'https://api.meraki.com/api/v0/organizations/{organizationId}/uplinksLossAndLatency'",
+      "sample_resp": "[\n  {\n    \"networkId\": \"N_12345\",\n    \"serial\": \"Q2AB-CDEF-GHIJ\",\n    \"uplink\": \"wan1\",\n    \"ip\": \"8.8.8.8\",\n    \"timeSeries\": [\n      {\n        \"ts\": \"2019-01-31T18:46:13Z\",\n        \"lossPercent\": 5.3,\n        \"latencyMs\": 194.9\n      }\n    ]\n  }\n]"
     }
   ],
   "Phone announcements": [
@@ -4234,7 +4243,7 @@
     {
       "http_method": "PUT",
       "description": "Updates the uplink settings for your MX network.",
-      "path": "/network/{networkId}/uplinkSettings",
+      "path": "/networks/{networkId}/uplinkSettings",
       "alternate_path": null,
       "successful_http_status": 200,
       "params": [
@@ -4253,143 +4262,127 @@
           ]
         }
       ],
-      "sample_req": "curl -L -H 'X-Cisco-Meraki-API-Key: <key>' -H 'Content-Type: application/json' -X PUT --data-binary '{\"bandwidthLimits\":{\"wan1\":{\"limitUp\":1000000,\"limitDown\":1000000},\"wan2\":{\"limitUp\":1000000,\"limitDown\":1000000},\"cellular\":{\"limitUp\":51200,\"limitDown\":51200}}}' 'https://api.meraki.com/api/v0/network/{networkId}/uplinkSettings'",
+      "sample_req": "curl -L -H 'X-Cisco-Meraki-API-Key: <key>' -H 'Content-Type: application/json' -X PUT --data-binary '{\"bandwidthLimits\":{\"wan1\":{\"limitUp\":1000000,\"limitDown\":1000000},\"wan2\":{\"limitUp\":1000000,\"limitDown\":1000000},\"cellular\":{\"limitUp\":51200,\"limitDown\":51200}}}' 'https://api.meraki.com/api/v0/networks/{networkId}/uplinkSettings'",
       "sample_resp": "{\n  \"bandwidthLimits\": {\n    \"wan1\": {\n      \"limitUp\": 1000000,\n      \"limitDown\": 1000000\n    },\n    \"wan2\": {\n      \"limitUp\": 1000000,\n      \"limitDown\": 1000000\n    },\n    \"cellular\": {\n      \"limitUp\": 51200,\n      \"limitDown\": 51200\n    }\n  }\n}"
     }
   ],
   "VLANs": [
     {
       "http_method": "GET",
-      "path": "/networks/[networkId]/vlans",
-      "alternate_path": null,
-      "sample_req": "curl -L -H 'X-Cisco-Meraki-API-Key: <key>' -H 'Content-Type: application/json' -X GET 'https://api.meraki.com/api/v0/networks/[networkId]/vlans'",
-      "sample_resp": "[\n  {\n    \"id\": \"1234\",\n    \"networkId\": \"N_24329156\",\n    \"name\": \"My VLAN\",\n    \"applianceIp\": \"1.2.3.4\",\n    \"subnet\": \"192.168.1.0/24\",\n    \"fixedIpAssignments\": \"{}\",\n    \"reservedIpRanges\": \"[]\",\n    \"dnsNameservers\": \"google_dns\"\n  }\n]",
       "description": "List the VLANs for this network",
-      "params": null,
-      "successful_http_status": 200
+      "path": "/networks/{networkId}/vlans",
+      "alternate_path": null,
+      "successful_http_status": 200,
+      "sample_req": "curl -L -H 'X-Cisco-Meraki-API-Key: <key>' -H 'Content-Type: application/json' -X GET 'https://api.meraki.com/api/v0/networks/{networkId}/vlans'",
+      "sample_resp": "[\n  {\n    \"id\": \"1234\",\n    \"networkId\": \"N_24329156\",\n    \"name\": \"My VLAN\",\n    \"applianceIp\": \"1.2.3.4\",\n    \"subnet\": \"192.168.1.0/24\",\n    \"fixedIpAssignments\": \"{}\",\n    \"reservedIpRanges\": \"[]\",\n    \"dnsNameservers\": \"google_dns\"\n  }\n]"
     },
     {
       "http_method": "GET",
-      "path": "/networks/[networkId]/vlans/[vlanId]",
-      "alternate_path": null,
-      "sample_req": "curl -L -H 'X-Cisco-Meraki-API-Key: <key>' -H 'Content-Type: application/json' -X GET 'https://api.meraki.com/api/v0/networks/[networkId]/vlans/[vlanId]'",
-      "sample_resp": "{\n  \"id\": \"1234\",\n  \"networkId\": \"N_24329156\",\n  \"name\": \"My VLAN\",\n  \"applianceIp\": \"1.2.3.4\",\n  \"subnet\": \"192.168.1.0/24\",\n  \"fixedIpAssignments\": \"{}\",\n  \"reservedIpRanges\": \"[]\",\n  \"dnsNameservers\": \"google_dns\"\n}",
       "description": "Return a VLAN",
-      "params": null,
-      "successful_http_status": 200
+      "path": "/networks/{networkId}/vlans/{vlanId}",
+      "alternate_path": null,
+      "successful_http_status": 200,
+      "sample_req": "curl -L -H 'X-Cisco-Meraki-API-Key: <key>' -H 'Content-Type: application/json' -X GET 'https://api.meraki.com/api/v0/networks/{networkId}/vlans/{vlanId}'",
+      "sample_resp": "{\n  \"id\": \"1234\",\n  \"networkId\": \"N_24329156\",\n  \"name\": \"My VLAN\",\n  \"applianceIp\": \"1.2.3.4\",\n  \"subnet\": \"192.168.1.0/24\",\n  \"fixedIpAssignments\": \"{}\",\n  \"reservedIpRanges\": \"[]\",\n  \"dnsNameservers\": \"google_dns\"\n}"
     },
     {
       "http_method": "PUT",
-      "path": "/networks/[networkId]/vlans/[vlanId]",
-      "alternate_path": null,
-      "sample_req": "curl -L -H 'X-Cisco-Meraki-API-Key: <key>' -H 'Content-Type: application/json' -X PUT --data-binary '{\"id\":\"1234\",\"networkId\":\"N_24329156\",\"name\":\"My VLAN\",\"applianceIp\":\"1.2.3.4\",\"subnet\":\"192.168.1.0/24\",\"fixedIpAssignments\":\"{}\",\"reservedIpRanges\":\"[]\",\"dnsNameservers\":\"google_dns\"}' 'https://api.meraki.com/api/v0/networks/[networkId]/vlans/[vlanId]'",
-      "sample_resp": "{\n  \"id\": \"1234\",\n  \"networkId\": \"N_24329156\",\n  \"name\": \"My VLAN\",\n  \"applianceIp\": \"1.2.3.4\",\n  \"subnet\": \"192.168.1.0/24\",\n  \"fixedIpAssignments\": \"{}\",\n  \"reservedIpRanges\": \"[]\",\n  \"dnsNameservers\": \"google_dns\"\n}",
       "description": "Update a VLAN",
+      "path": "/networks/{networkId}/vlans/{vlanId}",
+      "alternate_path": null,
+      "successful_http_status": 200,
       "params": [
         {
           "name": "name",
-          "description": "The name of the VLAN",
-          "is_array": false
+          "description": "The name of the VLAN"
         },
         {
           "name": "subnet",
-          "description": "The subnet of the VLAN",
-          "is_array": false
+          "description": "The subnet of the VLAN"
         },
         {
           "name": "applianceIp",
-          "description": "The local IP of the appliance on the VLAN",
-          "is_array": false
+          "description": "The local IP of the appliance on the VLAN"
         },
         {
           "name": "fixedIpAssignments",
-          "description": "The DHCP fixed IP assignments on the VLAN",
-          "is_array": false
+          "description": "The DHCP fixed IP assignments on the VLAN"
         },
         {
           "name": "reservedIpRanges",
-          "description": "The DHCP reserved IP ranges on the VLAN",
-          "is_array": false
+          "description": "The DHCP reserved IP ranges on the VLAN"
         },
         {
           "name": "vpnNatSubnet",
-          "description": "The translated VPN subnet if VPN and VPN subnet translation are enabled on the VLAN",
-          "is_array": false
+          "description": "The translated VPN subnet if VPN and VPN subnet translation are enabled on the VLAN"
         },
         {
           "name": "dnsNameservers",
-          "description": "The DNS nameservers used for DHCP responses, either \"upstream_dns\", \"google_dns\", \"opendns\", or a newline seperated string of IP addresses or domain names",
-          "is_array": false
+          "description": "The DNS nameservers used for DHCP responses, either \"upstream_dns\", \"google_dns\", \"opendns\", or a newline seperated string of IP addresses or domain names"
         }
       ],
-      "successful_http_status": 200
+      "sample_req": "curl -L -H 'X-Cisco-Meraki-API-Key: <key>' -H 'Content-Type: application/json' -X PUT --data-binary '{\"id\":\"1234\",\"networkId\":\"N_24329156\",\"name\":\"My VLAN\",\"applianceIp\":\"1.2.3.4\",\"subnet\":\"192.168.1.0/24\",\"fixedIpAssignments\":\"{}\",\"reservedIpRanges\":\"[]\",\"dnsNameservers\":\"google_dns\"}' 'https://api.meraki.com/api/v0/networks/{networkId}/vlans/{vlanId}'",
+      "sample_resp": "{\n  \"id\": \"1234\",\n  \"networkId\": \"N_24329156\",\n  \"name\": \"My VLAN\",\n  \"applianceIp\": \"1.2.3.4\",\n  \"subnet\": \"192.168.1.0/24\",\n  \"fixedIpAssignments\": \"{}\",\n  \"reservedIpRanges\": \"[]\",\n  \"dnsNameservers\": \"google_dns\"\n}"
     },
     {
       "http_method": "POST",
-      "path": "/networks/[networkId]/vlans",
-      "alternate_path": null,
-      "sample_req": "curl -L -H 'X-Cisco-Meraki-API-Key: <key>' -H 'Content-Type: application/json' -X POST --data-binary '{\"id\":\"1234\",\"name\":\"My VLAN\",\"subnet\":\"192.168.1.0/24\",\"applianceIp\":\"1.2.3.4\"}' 'https://api.meraki.com/api/v0/networks/[networkId]/vlans'",
-      "sample_resp": "{\n  \"id\": \"1234\",\n  \"name\": \"My VLAN\",\n  \"subnet\": \"192.168.1.0/24\",\n  \"applianceIp\": \"1.2.3.4\"\n}",
       "description": "Add a VLAN",
+      "path": "/networks/{networkId}/vlans",
+      "alternate_path": null,
+      "successful_http_status": 201,
       "params": [
         {
           "name": "id",
-          "description": "The VLAN ID of the new VLAN (must be between 1 and 4094)",
-          "is_array": false
+          "description": "The VLAN ID of the new VLAN (must be between 1 and 4094)"
         },
         {
           "name": "name",
-          "description": "The name of the new VLAN",
-          "is_array": false
+          "description": "The name of the new VLAN"
         },
         {
           "name": "subnet",
-          "description": "The subnet of the VLAN",
-          "is_array": false
+          "description": "The subnet of the VLAN"
         },
         {
           "name": "applianceIp",
-          "description": "The local IP of the appliance on the VLAN",
-          "is_array": false
+          "description": "The local IP of the appliance on the VLAN"
         }
       ],
-      "successful_http_status": 201
+      "sample_req": "curl -L -H 'X-Cisco-Meraki-API-Key: <key>' -H 'Content-Type: application/json' -X POST --data-binary '{\"id\":\"1234\",\"name\":\"My VLAN\",\"subnet\":\"192.168.1.0/24\",\"applianceIp\":\"1.2.3.4\"}' 'https://api.meraki.com/api/v0/networks/{networkId}/vlans'",
+      "sample_resp": "{\n  \"id\": \"1234\",\n  \"name\": \"My VLAN\",\n  \"subnet\": \"192.168.1.0/24\",\n  \"applianceIp\": \"1.2.3.4\"\n}"
     },
     {
       "http_method": "DELETE",
-      "path": "/networks/[networkId]/vlans/[vlanId]",
-      "alternate_path": null,
-      "sample_req": "curl -L -H 'X-Cisco-Meraki-API-Key: <key>' -H 'Content-Type: application/json' -X DELETE 'https://api.meraki.com/api/v0/networks/[networkId]/vlans/[vlanId]'",
-      "sample_resp": "(empty)",
       "description": "Delete a VLAN from a network",
-      "params": null,
-      "successful_http_status": 204
+      "path": "/networks/{networkId}/vlans/{vlanId}",
+      "alternate_path": null,
+      "successful_http_status": 204,
+      "sample_req": "curl -L -H 'X-Cisco-Meraki-API-Key: <key>' -H 'Content-Type: application/json' -X DELETE 'https://api.meraki.com/api/v0/networks/{networkId}/vlans/{vlanId}'",
+      "sample_resp": "(empty)"
     },
     {
       "http_method": "GET",
-      "path": "/networks/[networkId]/vlansEnabledState",
-      "alternate_path": null,
-      "sample_req": "curl -L -H 'X-Cisco-Meraki-API-Key: <key>' -H 'Content-Type: application/json' -X GET 'https://api.meraki.com/api/v0/networks/[networkId]/vlansEnabledState'",
-      "sample_resp": "{\n  \"enabled\": true,\n  \"networkId\": \"N_24329156\"\n}",
       "description": "Returns the enabled status of VLANs for the network",
-      "params": null,
-      "successful_http_status": 200
+      "path": "/networks/{networkId}/vlansEnabledState",
+      "alternate_path": null,
+      "successful_http_status": 200,
+      "sample_req": "curl -L -H 'X-Cisco-Meraki-API-Key: <key>' -H 'Content-Type: application/json' -X GET 'https://api.meraki.com/api/v0/networks/{networkId}/vlansEnabledState'",
+      "sample_resp": "{\n  \"enabled\": true,\n  \"networkId\": \"N_24329156\"\n}"
     },
     {
       "http_method": "PUT",
-      "path": "/networks/[networkId]/vlansEnabledState",
-      "alternate_path": null,
-      "sample_req": "curl -L -H 'X-Cisco-Meraki-API-Key: <key>' -H 'Content-Type: application/json' -X PUT --data-binary '{\"enabled\":true}' 'https://api.meraki.com/api/v0/networks/[networkId]/vlansEnabledState'",
-      "sample_resp": "{\n  \"enabled\": true,\n  \"networkId\": \"N_24329156\"\n}",
       "description": "Enable/Disable VLANs for the given network",
+      "path": "/networks/{networkId}/vlansEnabledState",
+      "alternate_path": null,
+      "successful_http_status": 200,
       "params": [
         {
           "name": "enabled",
-          "description": "Boolean indicating whether to enable (true) or disable (false) VLANs for the network",
-          "is_array": false
+          "description": "Boolean indicating whether to enable (true) or disable (false) VLANs for the network"
         }
       ],
-      "successful_http_status": 200
+      "sample_req": "curl -L -H 'X-Cisco-Meraki-API-Key: <key>' -H 'Content-Type: application/json' -X PUT --data-binary '{\"enabled\":true}' 'https://api.meraki.com/api/v0/networks/{networkId}/vlansEnabledState'",
+      "sample_resp": "{\n  \"enabled\": true,\n  \"networkId\": \"N_24329156\"\n}"
     }
   ],
   "Wireless health": [

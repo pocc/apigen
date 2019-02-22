@@ -15,9 +15,9 @@
 """Module to govern interaction with the web."""
 import json
 import os
+import socket
 import time
 import urllib.request
-import socket
 
 
 def get_apidocs_webpage(url):
@@ -65,5 +65,6 @@ def get_json_str_from_file(filename):
     """Open a file and get its JSON as a dict."""
     with open(filename) as file_obj:
         return json.loads(file_obj.read())
+
 
 fetch_apidocs_json()

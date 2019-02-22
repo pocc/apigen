@@ -17,14 +17,14 @@
 For more information, read
     https://github.com/postmanlabs/openapi-to-postman
 """
-import subprocess as sp
-import shutil
-import tempfile
 import logging
+import shutil
+import subprocess as sp
+import tempfile
 
 import codegen.utils as utils
 
-logger = logging.getLogger(__name__)
+LOGGER = logging.getLogger(__name__)
 
 
 def make_postman_collection(src, options):
@@ -48,17 +48,18 @@ def make_postman_collection(src, options):
         raise EnvironmentError('Required node not found!')
 
     with tempfile.TemporaryDirectory() as tmpdir:
-        logger.info("Installing " + program_name + " to temp dir " + tmpdir)
+        log_msg = "Installing " + program_name + " to temp dir " + tmpdir
+        LOGGER.info(log_msg)
         shutil.copy(src, tmpdir)
         install_cmds = ['npm', 'install', '--prefix',
                         tmpdir, program_name]
         with sp.Popen(install_cmds, stdout=sp.PIPE,
                       stderr=sp.STDOUT) as sp_pipe:
-            logger.info('Starting npm install')
+            LOGGER.info('Starting npm install')
             result = sp_pipe.communicate()[0].decode('utf-8')
             utils.log_ext_program_output('npm', result)
 
-        logger.info("Converting OpenAPI3 to Postman...")
+        LOGGER.info("Converting OpenAPI3 to Postman...")
         openapi2postman = tmpdir + \
             '/node_modules/openapi-to-postmanv2/bin/openapi2postmanv2.js'
         openapi2postman_cmds = ['node', openapi2postman,
@@ -71,5 +72,4 @@ def make_postman_collection(src, options):
             result = sp_pipe.communicate()[0].decode('utf-8')
             utils.log_ext_program_output(program_name, result)
 
-    logger.info("Postman collection created! Temp files have been deleted.")
-
+    LOGGER.info("Postman collection created! Temp files have been deleted.")

@@ -1,5 +1,4 @@
-# MAD CodeGen
-Meraki API Docs Code Generator. 
+# Meraki API Docs Code Generator 
 
 Generate code in $language by 
 1. Create an OpenAPI3 spec from the Meraki API Docs

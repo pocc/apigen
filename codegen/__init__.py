@@ -13,15 +13,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Project variables."""
-__name__ = 'mad_codegen'
+__title__ = 'mad_codegen'
 __version__ = '0.1.2'
 __description__ = 'Meraki API Docs Code Generator'
 __author__ = 'Ross Jacobs'
-__contact__ = 'rossbjacobs@gmail.com'
+__author_email__ = 'rossbjacobs@gmail.com'
 __license__ = 'Apache 2.0'
 __license_url__ = 'http://www.apache.org/licenses/LICENSE-2.0.html'
-__project_url__ = 'https://github.com/pocc/mad-codegen'
-__issues_url__ = __project_url__ + '/issues'
+__url__ = 'https://github.com/pocc/mad-codegen'
+__issues_url__ = __url__ + '/issues'
 
 __specs__ = ['openapi3', 'postman']
 __generators__ = {
