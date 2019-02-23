@@ -12,9 +12,9 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""File a github issue."""
+"""Utilities that codegen uses."""
 import datetime
-import distutils.version as versioning
+import distutils.version
 import http.client
 import json
 import logging
@@ -22,7 +22,7 @@ import re
 
 import codegen
 
-LOGGER = logging.getLogger(__name__)
+LOGGER = logging.getLogger()
 
 
 class GithubIssues:
@@ -45,34 +45,45 @@ class GithubIssues:
         return issues_text
 
     def check_issue(self, api_primitive):
-        """Check whether a new API primitive has an issue assigned."""
+        """Check whether a new API primitive has an issue assigned.
+
+        Args:
+            api_primitive (str): A Meraki API path parameter
+        Returns (bool):
+            Whether there is a new path parameter that requires an issue
+        """
         issues_json = json.loads(self.get_issues())
         existing_issue_titles = [issue['title'] for issue in issues_json]
         new_issue_required = api_primitive not in existing_issue_titles \
-            and is_up_to_date()
+            and self.is_up_to_date()
         if new_issue_required:
-            print("INFO: API primitive not found, please create an issue:"
+            print("INFO: API primitive not found. "
+                  "This means new API endpoints have been released."
+                  "\nPlease create an issue:"
                   "\n\n\thttps://github.com/pocc/mad-codegen/issues"
                   "\n\tTitle\tNew API primitive found: `" + api_primitive + "`"
                   "\n\tBody\tFound at " + str(datetime.datetime.utcnow()))
 
         return new_issue_required
 
+    def is_up_to_date(self):
+        """Check whether this program is out of date with github's.
 
-def is_up_to_date():
-    """Check whether this program is out of date with github's."""
-    base_url = 'raw.githubusercontent.com'
-    route = '/pocc/mad-codegen/master/mad-codegen/__init__.py'
-    conn = http.client.HTTPSConnection(base_url)
-    conn.request('GET', route, headers={'User-Agent': 'Merakygen'})
-    resp = conn.getresponse()
-    init_text = resp.read().decode('utf-8')
-    web_version = re.search(r'__version__ ?= ?\'([0-9.]*)\'', init_text)[1]
+        Returns (bool):
+            Whether this program is out of date with masters' version.
+        """
+        base_url = 'raw.githubusercontent.com'
+        route = '/pocc/mad-codegen/master/mad-codegen/__init__.py'
+        conn = http.client.HTTPSConnection(base_url)
+        conn.request('GET', route, headers=self.headers)
+        resp = conn.getresponse()
+        init_text = resp.read().decode('utf-8')
+        web_version = re.search(r'__version__ ?= ?\'([0-9.]*)\'', init_text)[1]
 
-    up_to_date = versioning.StrictVersion(codegen.__version__) \
-        >= versioning.StrictVersion(web_version)
+        up_to_date = distutils.version.StrictVersion(codegen.__version__) \
+            >= distutils.version.StrictVersion(web_version)
 
-    return up_to_date
+        return up_to_date
 
 
 def log_ext_program_output(program_name, program_output):

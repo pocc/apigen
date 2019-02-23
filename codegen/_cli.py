@@ -42,11 +42,14 @@ DESCRIPTION:
     Create an API client in your $language.
     By default, will save the spec or module in the current working directory.
 
+    Requires `java`. For postman export, requires `node`.
+
     A language or spec MUST be specified.
 
 SEE ALSO:
   OpenAPI Generator: https://github.com/OpenAPITools/openapi-generator
 """
+import distutils.version
 import logging
 import os
 import re
@@ -56,6 +59,7 @@ import sys
 import docopt
 
 import codegen
+import codegen.make_api_client
 
 LOGGER = logging.getLogger()
 
@@ -63,18 +67,39 @@ LOGGER = logging.getLogger()
 def get_cli_args():
     """CLI entry point"""
     args = docopt.docopt(__doc__)
+    check_java_version()
 
     if args['--lang'] or args['--spec']:
         if not os.path.exists('generated_clients'):
             os.makedirs('generated_clients')
         args = correct_fuzzy_args(args)
+        verify_valid_specs(args['--spec'])
         set_log_level(args)
-        validate_targets(args)
 
-        return args
+        return args['--spec'], args['--lang'], args['--options']
 
     parse_cli_args(args)
     sys.exit()
+
+
+def check_java_version():
+    """Verify whether Java version is correct.
+
+    Requirements:
+        * java >= 1.8
+    """
+    required_java_version = '1.8'
+    cmd_list = ['java', '-version']
+    version_text = str(sp.check_output(cmd_list, stderr=sp.STDOUT))
+    if 'version' not in version_text:
+        raise Exception("Java not found. Reinstall and try again.")
+    java_version = re.search(r'"([\d]*\.[\d]*)\.[\d]*_', str(version_text))[1]
+    has_required_java_version = distutils.version.StrictVersion(java_version) \
+        >= distutils.version.StrictVersion(required_java_version)
+    if not has_required_java_version:
+        raise Exception("Required Java 1.8+ not found.")
+
+    LOGGER.info('✓ java >= 1.8 satisfied.')
 
 
 def set_log_level(args):
@@ -113,22 +138,6 @@ def set_log_level(args):
             sys.exit()
 
 
-def validate_targets(args):
-    """Validate whether the user inputted languages/specs are valid."""
-    available_langs = re.findall(r'- (.*?)\n', get_openapi_generators())
-    invalid_langs = set(args['--lang']).difference(set(available_langs))
-    if invalid_langs:
-        err_msg = "Valid languages on system: " + str(available_langs) + \
-            "\nInvalid entered languages: " + str(invalid_langs)
-        raise SyntaxWarning(err_msg)
-
-    invalid_specs = set(args['--spec']).difference(set(codegen.__specs__))
-    if invalid_specs:
-        err_msg = "Valid languages on system: " + str(codegen.__specs__) + \
-            "\nInvalid entered languages: " + str(invalid_specs)
-        raise SyntaxWarning(err_msg)
-
-
 def correct_fuzzy_args(args):
     """Change arguments to allow for fuzzy targets
 
@@ -146,6 +155,15 @@ def correct_fuzzy_args(args):
     return args
 
 
+def verify_valid_specs(entered_specs):
+    """Verify whether the spec entered is supported by MAD CodeGen."""
+    invalid_specs = set(entered_specs).difference(codegen.__specs__)
+    if invalid_specs:
+        err_msg = "Valid specs: " + str(codegen.__specs__) + \
+            "\nInvalid entered specs: " + str(invalid_specs)
+        raise SyntaxWarning(err_msg)
+
+
 def parse_cli_args(args):
     """Act on args that don't require the main use of the program.
 
@@ -155,19 +173,10 @@ def parse_cli_args(args):
     if args['--version']:
         print(codegen.__version__)
     elif args['--show-generators']:
-        print(get_openapi_generators())
+        openapi_obj = codegen.make_api_client.OpenApiGenerator()
+        generator_lists = openapi_obj.get_avail_generators()
+        print(generator_lists)
     else:
         print("ERROR: Specify at least one language or spec.")
 
     sys.exit()
-
-
-def get_openapi_generators():
-    """Get the languages that OpenAPI Generator supports.
-
-    Returns (str):
-        Several paragraph lists of languages that OpenAPI Generator supports.
-    """
-    cmd_list = ['java', '-jar', 'openapi-generator-cli.jar', 'list']
-    sp_pipe = sp.Popen(cmd_list, stdout=sp.PIPE, stderr=sp.STDOUT)
-    return sp_pipe.communicate()[0].decode('utf-8').strip()

@@ -48,6 +48,10 @@ Save an openapi json:
 
 `mad-codegen --lang openapi`
 
+## Notes
+MAD CodeGen has a local cache. The second time an operation is run, it will 
+usually run faster. 
+
 ## Acknowledgements
 @shiyuechengineer, @jletizia: For making API clients that inspired this project.
  

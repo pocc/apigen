@@ -896,18 +896,6 @@
       "successful_http_status": 200
     }
   ],
-  "MX L7 firewall": [
-    {
-      "http_method": "GET",
-      "path": "/networks/[networkId]/l7FirewallRules",
-      "alternate_path": null,
-      "sample_req": "curl -L -H 'X-Cisco-Meraki-API-Key: <key>' -H 'Content-Type: application/json' -X GET 'https://api.meraki.com/api/v0/networks/[networkId]/l7FirewallRules'",
-      "sample_resp": "[\n  {\n    \"policy\": \"deny\",\n    \"type\": \"application\",\n    \"value\": {\n      \"id\": \"meraki:layer7/application/125\",\n      \"name\": \"mlb.com\"\n    }\n  }\n]",
-      "description": "List the MX L7 firewall rules for an MX network",
-      "params": null,
-      "successful_http_status": 200
-    }
-  ],
   "MX VPN firewall": [
     {
       "http_method": "GET",
@@ -4126,6 +4114,216 @@
           "name": "allowedIps",
           "description": "An array of whitelisted IPs that can access the service. This field is required if \"access\" is set to \"restricted\". Otherwise this field is ignored",
           "is_array": false
+        }
+      ],
+      "successful_http_status": 200
+    }
+  ],
+  "MX 1:Many NAT rules": [
+    {
+      "http_method": "GET",
+      "path": "/networks/[networkId]/oneToManyNatRules",
+      "alternate_path": null,
+      "sample_req": "curl -L -H 'X-Cisco-Meraki-API-Key: <key>' -H 'Content-Type: application/json' -X GET 'https://api.meraki.com/api/v0/networks/[networkId]/oneToManyNatRules'",
+      "sample_resp": "{\n  \"rules\": [\n    {\n      \"publicIp\": \"146.11.11.13\",\n      \"uplink\": \"internet1\",\n      \"portRules\": [\n        {\n          \"name\": \"Rule 1\",\n          \"protocol\": \"tcp\",\n          \"publicPort\": \"9443\",\n          \"localIp\": \"192.168.128.1\",\n          \"localPort\": \"443\",\n          \"allowedIps\": [\n            \"any\"\n          ]\n        },\n        {\n          \"name\": \"Rule 2\",\n          \"protocol\": \"tcp\",\n          \"publicPort\": \"8080\",\n          \"localIp\": \"192.168.128.1\",\n          \"localPort\": \"80\",\n          \"allowedIps\": [\n            \"10.82.110.0/24\",\n            \"10.82.111.0/24\"\n          ]\n        }\n      ]\n    }\n  ]\n}",
+      "description": "Return the 1:Many NAT mapping rules for an MX network",
+      "params": null,
+      "successful_http_status": 200
+    },
+    {
+      "http_method": "PUT",
+      "path": "/networks/[networkId]/oneToManyNatRules",
+      "alternate_path": null,
+      "sample_req": "curl -L -H 'X-Cisco-Meraki-API-Key: <key>' -H 'Content-Type: application/json' -X PUT --data-binary '{\"rules\":[{\"publicIp\":\"146.11.11.13\",\"uplink\":\"internet1\",\"portRules\":[{\"name\":\"Rule 1\",\"protocol\":\"tcp\",\"publicPort\":\"9443\",\"localIp\":\"192.168.128.1\",\"localPort\":\"443\",\"allowedIps\":[\"any\"]},{\"name\":\"Rule 2\",\"protocol\":\"tcp\",\"publicPort\":\"8080\",\"localIp\":\"192.168.128.1\",\"localPort\":\"80\",\"allowedIps\":[\"10.82.110.0/24\",\"10.82.111.0/24\"]}]}]}' 'https://api.meraki.com/api/v0/networks/[networkId]/oneToManyNatRules'",
+      "sample_resp": "{\n  \"rules\": [\n    {\n      \"publicIp\": \"146.11.11.13\",\n      \"uplink\": \"internet1\",\n      \"portRules\": [\n        {\n          \"name\": \"Rule 1\",\n          \"protocol\": \"tcp\",\n          \"publicPort\": \"9443\",\n          \"localIp\": \"192.168.128.1\",\n          \"localPort\": \"443\",\n          \"allowedIps\": [\n            \"any\"\n          ]\n        },\n        {\n          \"name\": \"Rule 2\",\n          \"protocol\": \"tcp\",\n          \"publicPort\": \"8080\",\n          \"localIp\": \"192.168.128.1\",\n          \"localPort\": \"80\",\n          \"allowedIps\": [\n            \"10.82.110.0/24\",\n            \"10.82.111.0/24\"\n          ]\n        }\n      ]\n    }\n  ]\n}",
+      "description": "Set the 1:Many NAT mapping rules for an MX network",
+      "params": [
+        {
+          "name": "rules",
+          "description": "An array of 1:Many nat rules",
+          "is_array": true,
+          "params": [
+            {
+              "name": "publicIp",
+              "description": "The IP address that will be used to access the internal resource from the WAN",
+              "is_array": false
+            },
+            {
+              "name": "uplink",
+              "description": "The physical WAN interface on which the traffic will arrive ('internet1' or, if available, 'internet2')",
+              "is_array": false
+            },
+            {
+              "name": "portRules",
+              "description": "An array of associated forwarding rules",
+              "is_array": true
+            },
+            {
+              "name": "name",
+              "description": "A description of the rule",
+              "is_array": false
+            },
+            {
+              "name": "protocol",
+              "description": "'tcp' or 'udp'",
+              "is_array": false
+            },
+            {
+              "name": "publicPort",
+              "description": "Destination port of the traffic that is arriving on the WAN",
+              "is_array": false
+            },
+            {
+              "name": "localIp",
+              "description": "Local IP address to which traffic will be forwarded",
+              "is_array": false
+            },
+            {
+              "name": "localPort",
+              "description": "Destination port of the forwarded traffic that will be sent from the MX to the specified host on the LAN. If you simply wish to forward the traffic without translating the port, this should be the same as the Public port",
+              "is_array": false
+            },
+            {
+              "name": "allowedIps",
+              "description": "Remote IP addresses or ranges that are permitted to access the internal resource via this port forwarding rule, or 'any'",
+              "is_array": true
+            }
+          ]
+        }
+      ],
+      "successful_http_status": 200
+    }
+  ],
+  "MX 1:1 NAT rules": [
+    {
+      "http_method": "GET",
+      "path": "/networks/[networkId]/oneToOneNatRules",
+      "alternate_path": null,
+      "sample_req": "curl -L -H 'X-Cisco-Meraki-API-Key: <key>' -H 'Content-Type: application/json' -X GET 'https://api.meraki.com/api/v0/networks/[networkId]/oneToOneNatRules'",
+      "sample_resp": "{\n  \"rules\": [\n    {\n      \"name\": \"Service behind NAT\",\n      \"lanIp\": \"192.168.128.22\",\n      \"publicIp\": \"146.12.3.33\",\n      \"uplink\": \"internet1\",\n      \"allowedInbound\": [\n        {\n          \"protocol\": \"tcp\",\n          \"destinationPorts\": [\n            \"80\"\n          ],\n          \"allowedIps\": [\n            \"10.82.112.0/24\",\n            \"10.82.0.0/16\"\n          ]\n        },\n        {\n          \"protocol\": \"udp\",\n          \"destinationPorts\": [\n            \"8080\"\n          ],\n          \"allowedIps\": [\n            \"10.81.110.5\",\n            \"10.81.0.0/16\"\n          ]\n        }\n      ]\n    }\n  ]\n}",
+      "description": "Return the 1:1 NAT mapping rules for an MX network",
+      "params": null,
+      "successful_http_status": 200
+    },
+    {
+      "http_method": "PUT",
+      "path": "/networks/[networkId]/oneToOneNatRules",
+      "alternate_path": null,
+      "sample_req": "curl -L -H 'X-Cisco-Meraki-API-Key: <key>' -H 'Content-Type: application/json' -X PUT --data-binary '{\"rules\":[{\"name\":\"Service behind NAT\",\"lanIp\":\"192.168.128.22\",\"publicIp\":\"146.12.3.33\",\"uplink\":\"internet1\",\"allowedInbound\":[{\"protocol\":\"tcp\",\"destinationPorts\":[\"80\"],\"allowedIps\":[\"10.82.112.0/24\",\"10.82.0.0/16\"]},{\"protocol\":\"udp\",\"destinationPorts\":[\"8080\"],\"allowedIps\":[\"10.81.110.5\",\"10.81.0.0/16\"]}]}]}' 'https://api.meraki.com/api/v0/networks/[networkId]/oneToOneNatRules'",
+      "sample_resp": "{\n  \"rules\": [\n    {\n      \"name\": \"Service behind NAT\",\n      \"lanIp\": \"192.168.128.22\",\n      \"publicIp\": \"146.12.3.33\",\n      \"uplink\": \"internet1\",\n      \"allowedInbound\": [\n        {\n          \"protocol\": \"tcp\",\n          \"destinationPorts\": [\n            \"80\"\n          ],\n          \"allowedIps\": [\n            \"10.82.112.0/24\",\n            \"10.82.0.0/16\"\n          ]\n        },\n        {\n          \"protocol\": \"udp\",\n          \"destinationPorts\": [\n            \"8080\"\n          ],\n          \"allowedIps\": [\n            \"10.81.110.5\",\n            \"10.81.0.0/16\"\n          ]\n        }\n      ]\n    }\n  ]\n}",
+      "description": "Set the 1:1 NAT mapping rules for an MX network",
+      "params": [
+        {
+          "name": "rules",
+          "description": "An array of 1:1 nat rules",
+          "is_array": true,
+          "params": [
+            {
+              "name": "name",
+              "description": "A descriptive name for the rule",
+              "is_array": false
+            },
+            {
+              "name": "publicIp",
+              "description": "The IP address that will be used to access the internal resource from the WAN",
+              "is_array": false
+            },
+            {
+              "name": "lanIp",
+              "description": "The IP address of the server or device that hosts the internal resource that you wish to make available on the WAN",
+              "is_array": false
+            },
+            {
+              "name": "uplink",
+              "description": "The physical WAN interface on which the traffic will arrive ('internet1' or, if available, 'internet2')",
+              "is_array": false
+            },
+            {
+              "name": "allowedInbound",
+              "description": "The ports this mapping will provide access on, and the remote IPs that will be allowed access to the resource",
+              "is_array": true
+            },
+            {
+              "name": "protocol",
+              "description": "Either of the following: 'tcp', 'udp', 'icmp-ping' or 'any'",
+              "is_array": false
+            },
+            {
+              "name": "destinationPorts",
+              "description": "An array of ports or port ranges that will be forwarded to the host on the LAN",
+              "is_array": true
+            },
+            {
+              "name": "allowedIps",
+              "description": "An array of ranges of WAN IP addresses that are allowed to make inbound connections on the specified ports or port ranges, or 'any'",
+              "is_array": true
+            }
+          ]
+        }
+      ],
+      "successful_http_status": 200
+    }
+  ],
+  "MX port forwarding rules": [
+    {
+      "http_method": "GET",
+      "path": "/networks/[networkId]/portForwardingRules",
+      "alternate_path": null,
+      "sample_req": "curl -L -H 'X-Cisco-Meraki-API-Key: <key>' -H 'Content-Type: application/json' -X GET 'https://api.meraki.com/api/v0/networks/[networkId]/portForwardingRules'",
+      "sample_resp": "{\n  \"rules\": [\n    {\n      \"lanIp\": \"192.168.128.1\",\n      \"allowedIps\": [\n        \"any\"\n      ],\n      \"name\": \"Description of Port Forwarding Rule\",\n      \"protocol\": \"tcp\",\n      \"publicPort\": \"8100-8101\",\n      \"localPort\": \"442-443\",\n      \"uplink\": \"both\"\n    }\n  ]\n}",
+      "description": "Return the port forwarding rules for an MX network",
+      "params": null,
+      "successful_http_status": 200
+    },
+    {
+      "http_method": "PUT",
+      "path": "/networks/[networkId]/portForwardingRules",
+      "alternate_path": null,
+      "sample_req": "curl -L -H 'X-Cisco-Meraki-API-Key: <key>' -H 'Content-Type: application/json' -X PUT --data-binary '{\"rules\":[{\"lanIp\":\"192.168.128.1\",\"allowedIps\":[\"any\"],\"name\":\"Description of Port Forwarding Rule\",\"protocol\":\"tcp\",\"publicPort\":\"8100-8101\",\"localPort\":\"442-443\",\"uplink\":\"both\"}]}' 'https://api.meraki.com/api/v0/networks/[networkId]/portForwardingRules'",
+      "sample_resp": "{\n  \"rules\": [\n    {\n      \"lanIp\": \"192.168.128.1\",\n      \"allowedIps\": [\n        \"any\"\n      ],\n      \"name\": \"Description of Port Forwarding Rule\",\n      \"protocol\": \"tcp\",\n      \"publicPort\": \"8100-8101\",\n      \"localPort\": \"442-443\",\n      \"uplink\": \"both\"\n    }\n  ]\n}",
+      "description": "Update the port forwarding rules for an MX network",
+      "params": [
+        {
+          "name": "rules",
+          "description": "An array of port forwarding params",
+          "is_array": true,
+          "params": [
+            {
+              "name": "name",
+              "description": "A descriptive name for the rule",
+              "is_array": false
+            },
+            {
+              "name": "lanIp",
+              "description": "The IP address of the server or device that hosts the internal resource that you wish to make available on the WAN",
+              "is_array": false
+            },
+            {
+              "name": "uplink",
+              "description": "The physical WAN interface on which the traffic will arrive ('internet1' or, if available, 'internet2' or 'both')",
+              "is_array": false
+            },
+            {
+              "name": "publicPort",
+              "description": "A port or port ranges that will be forwarded to the host on the LAN",
+              "is_array": false
+            },
+            {
+              "name": "localPort",
+              "description": "A port or port ranges that will receive the forwarded traffic from the WAN",
+              "is_array": false
+            },
+            {
+              "name": "allowedIps",
+              "description": "An array of ranges of WAN IP addresses that are allowed to make inbound connections on the specified ports or port ranges (or any)",
+              "is_array": true
+            },
+            {
+              "name": "protocol",
+              "description": "TCP or UDP",
+              "is_array": false
+            }
+          ]
         }
       ],
       "successful_http_status": 200

@@ -37,15 +37,17 @@ Example generated JSON:
 """
 import json
 import re
-import tempfile
+import shutil
 import webbrowser
 
 import inflection as inf
 
 import codegen
+import codegen._cache as cache
+import codegen._hardcoded
+import codegen._utils as utils
 import codegen._vars as _vars
 import codegen._web as web
-import codegen.utils as utils
 
 
 def make_spec(save_locally):
@@ -57,7 +59,9 @@ def make_spec(save_locally):
     Returns (str):
         Path to generated to OpenAPI3 JSON file
     """
-    api_docs = web.fetch_apidocs_json()
+    docs_url = codegen._hardcoded.MERAKI_API_DOCS_LINK
+    api_docs = web.parse_apidocs_json(docs_url, 'meraki_api.html')
+    assert(isinstance(api_docs, dict))
 
     all_openapi_dict = _vars.OPENAPI_STUB
     all_openapi_dict['paths'], gen_schemas = generate_path_dicts(api_docs)
@@ -135,7 +139,7 @@ def get_apicall_dict(api_call):
     This article was used for response syntax:
         https://swagger.io/docs/specification/describing-responses/
     """
-    openapi_path = re.sub(r'[\[\{].*?[\}\]]', '{{{}}}', api_call['path'])
+    openapi_path = re.sub(r'[\[{].*?[}\]]', '{{{}}}', api_call['path'])
     schemas = {}
 
     apicall_success = str(api_call['successful_http_status'])
@@ -262,7 +266,7 @@ def add_query_params_to_schemas(api_call, schemas, last_non_param_word):
 
 def get_path_params(api_call_path):
     """Get the params from the path."""
-    path_params = re.findall(r'[\[\{](.*?)[\]\}]', api_call_path)
+    path_params = re.findall(r'[\[{](.*?)[\]}]', api_call_path)
     for idx, path_param in enumerate(path_params):
 
         if path_param.lower().startswith('id') or path_param == 'number':
@@ -296,12 +300,8 @@ def append_path_params(path_params):
 
 def save_openapi_json(openapi_json_text, save_locally):
     """Actually save the generated OpenAPI json text."""
-    filename = 'openapi3.json'
+    filename = cache.cache_file('openapi3.json', openapi_json_text)
     if save_locally:
-        filename = 'generated_clients/' + filename
-    else:
-        filename = tempfile.TemporaryDirectory().name + filename
-    with open(filename, 'w') as openapi_file:
-        openapi_file.write(openapi_json_text)
+        shutil.copy(filename, 'generated_clients')
 
     return filename

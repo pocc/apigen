@@ -5,7 +5,6 @@
 __pycache__
 
 # Project
-openapi-generator-cli.jar
-openapi3.json
 generated_clients/
+.cache/
 scratchpad/

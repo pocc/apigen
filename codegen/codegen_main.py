@@ -14,12 +14,10 @@
 # limitations under the License.
 """Main function."""
 import logging
-import re
-import subprocess as sp
 
 import codegen._cli as cli
-import codegen.make_api_client as api_client
-import codegen.make_openapi3_json as openapi3
+import codegen.make_api_client
+import codegen.make_openapi3_json
 import codegen.make_postman as postman
 
 LOGGER = logging.getLogger(__name__)
@@ -27,45 +25,16 @@ LOGGER = logging.getLogger(__name__)
 
 def main():
     """Main function."""
-    args = cli.get_cli_args()
-    check_requirements()
+    specs, langs, options = cli.get_cli_args()
+    save_openapi3_locally = 'openapi3' in specs
+    openapi3_path = codegen.make_openapi3_json.make_spec(save_openapi3_locally)
 
-    openapi3_path = openapi3.make_spec('openapi3' in args['--spec'])
-    if 'postman' in args['--spec']:
-        postman.make_postman_collection(openapi3_path, args['--options'])
+    if 'postman' in specs:
+        postman.make_postman_collection(openapi3_path, options)
 
-    if args['--lang']:
-        api_client.download_openapi_generator()
-        api_client.generate_api_clients(args['--lang'], openapi3_path)
-
-
-def check_requirements():
-    """Check the requirements
-
-    Requirements:
-        * java >= 1.8
-    """
-    check_java_version()
-    LOGGER.info(' ✓ java >= 1.8 satisfied.')
-
-
-def check_java_version():
-    """Verify whether Java version is correct."""
-    required_java_version = 1.8
-    java_version = get_java_version()
-    if java_version < required_java_version:
-        raise Exception("Required Java 1.8+ not found.")
-
-
-def get_java_version():
-    """Return the system java version."""
-    cmd_list = ['java', '-version']
-    version_text = str(sp.check_output(cmd_list, stderr=sp.STDOUT))
-    if 'version' not in version_text:
-        raise Exception("Java not found. Reinstall and try again.")
-    version = re.search(r'"([\d]*\.[\d]*)\.[\d]*_', str(version_text))[1]
-
-    return float(version)
+    if langs:
+        openapi_gen = codegen.make_api_client.OpenApiGenerator()
+        openapi_gen.generate_api_clients(langs, openapi3_path)
 
 
 if __name__ == '__main__':

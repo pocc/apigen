@@ -18,11 +18,12 @@ For more information, read
     https://github.com/postmanlabs/openapi-to-postman
 """
 import logging
+import os
 import shutil
 import subprocess as sp
-import tempfile
 
-import codegen.utils as utils
+import codegen._cache as cache
+import codegen._utils as utils
 
 LOGGER = logging.getLogger(__name__)
 
@@ -44,32 +45,25 @@ def make_postman_collection(src, options):
         EnvironmentError: node is required. Quit if not found.
     """
     program_name = 'openapi-to-postmanv2'
+    cache_dir = os.getcwd() + '/.cache'
+    if not os.path.exists(cache_dir):
+        os.makedirs(cache_dir)
     if not shutil.which('node'):
         raise EnvironmentError('Required node not found!')
 
-    with tempfile.TemporaryDirectory() as tmpdir:
-        log_msg = "Installing " + program_name + " to temp dir " + tmpdir
-        LOGGER.info(log_msg)
-        shutil.copy(src, tmpdir)
-        install_cmds = ['npm', 'install', '--prefix',
-                        tmpdir, program_name]
-        with sp.Popen(install_cmds, stdout=sp.PIPE,
-                      stderr=sp.STDOUT) as sp_pipe:
-            LOGGER.info('Starting npm install')
-            result = sp_pipe.communicate()[0].decode('utf-8')
-            utils.log_ext_program_output('npm', result)
+    cache.get_node_module(program_name)
 
-        LOGGER.info("Converting OpenAPI3 to Postman...")
-        openapi2postman = tmpdir + \
-            '/node_modules/openapi-to-postmanv2/bin/openapi2postmanv2.js'
-        openapi2postman_cmds = ['node', openapi2postman,
-                                '-s', src,
-                                '-o', 'generated_clients/meraki_postman.json']
-        if options:
-            openapi2postman_cmds += options.split(' ')
-        with sp.Popen(openapi2postman_cmds, stderr=sp.PIPE,
-                      stdout=sp.PIPE) as sp_pipe:
-            result = sp_pipe.communicate()[0].decode('utf-8')
-            utils.log_ext_program_output(program_name, result)
+    LOGGER.info("Converting OpenAPI3 to Postman...")
+    openapi2postman = cache_dir + \
+        '/node_modules/openapi-to-postmanv2/bin/openapi2postmanv2.js'
+    openapi2postman_cmds = ['node', openapi2postman,
+                            '-s', src,
+                            '-o', 'generated_clients/meraki_postman.json']
+    if options:
+        openapi2postman_cmds += options.split(' ')
+    with sp.Popen(openapi2postman_cmds, stderr=sp.PIPE,
+                  stdout=sp.PIPE) as sp_pipe:
+        result = sp_pipe.communicate()[0].decode('utf-8')
+        utils.log_ext_program_output(program_name, result)
 
-    LOGGER.info("Postman collection created! Temp files have been deleted.")
+    LOGGER.info("Postman collection created!")

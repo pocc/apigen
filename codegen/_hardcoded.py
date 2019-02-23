@@ -12,8 +12,9 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""A journey of a thousand miles begins with a hop through your gateway.
-Provides an entry point for MAD-CodeGen."""
-from codegen.codegen_main import main
+"""Hardcoded variables. Eventually, these will need to be updated."""
 
-main()
+# Java jar used to create API clients
+OPENAPI_DL_LINK = 'http://central.maven.org/maven2/org/openapitools/' \
+                  'openapi-generator-cli/3.3.4/openapi-generator-cli-3.3.4.jar'
+MERAKI_API_DOCS_LINK = 'https://dashboard.meraki.com/api_docs'

@@ -23,7 +23,7 @@ __license_url__ = 'http://www.apache.org/licenses/LICENSE-2.0.html'
 __url__ = 'https://github.com/pocc/mad-codegen'
 __issues_url__ = __url__ + '/issues'
 
-__specs__ = ['openapi3', 'postman']
+__specs__ = {'openapi3', 'postman'}
 __generators__ = {
     'android': {
         'version': '0.0.0'
