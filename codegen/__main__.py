@@ -13,28 +13,26 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Main function."""
-import logging
-
 import codegen._cli as cli
 import codegen.make_api_client
 import codegen.make_openapi3_json
 import codegen.make_postman as postman
 
-LOGGER = logging.getLogger(__name__)
-
 
 def main():
     """Main function."""
-    specs, langs, options = cli.get_cli_args()
-    save_openapi3_locally = 'openapi3' in specs
-    openapi3_path = codegen.make_openapi3_json.make_spec(save_openapi3_locally)
+    args = cli.get_cli_args()
+    if args:
+        specs, langs, options = args
+        save__locally = 'openapi3' in specs
+        openapi3_path = codegen.make_openapi3_json.make_spec(save__locally)
 
-    if 'postman' in specs:
-        postman.make_postman_collection(openapi3_path, options)
+        if 'postman' in specs:
+            postman.make_postman_collection(openapi3_path, options)
 
-    if langs:
-        openapi_gen = codegen.make_api_client.OpenApiGenerator()
-        openapi_gen.generate_api_clients(langs, openapi3_path)
+        if langs:
+            openapi_gen = codegen.make_api_client.OpenApiGenerator()
+            openapi_gen.generate_api_clients(langs, openapi3_path)
 
 
 if __name__ == '__main__':

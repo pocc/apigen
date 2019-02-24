@@ -5,6 +5,8 @@
 __pycache__/
 venv/
 poetry.lock
+.pytest_cache
+.coverage
 
 # Project
 generated_clients/

@@ -94,15 +94,17 @@ def get_node_module(module):
 
 def download_file(url, filename):
     """Download a file and if it doesn't already exist in .cache/"""
+    if not os.path.exists('.cache'):
+        os.makedirs('.cache')
     cached_filename = os.getcwd() + '/.cache/' + filename
 
     if file_cached_within_24hrs(cached_filename):
         LOGGER.info('Using cached ' + cached_filename)
     else:
         try:
+            LOGGER.info('Downloading `' + filename + '`...')
             urllib.request.urlretrieve(url, cached_filename)
-            log_msg = 'Successfully downloaded ' + cached_filename
-            LOGGER.info(log_msg)
+            LOGGER.info('Downloaded as ' + cached_filename)
         except urllib.error.URLError as err:
             err_msg = "An internet connection is required " \
                       "to download required assets"

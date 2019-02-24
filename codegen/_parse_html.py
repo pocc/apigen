@@ -20,7 +20,7 @@ import re
 import codegen._cache as cache
 import codegen._hardcoded
 
-LOGGER = logging.getLogger()
+LOGGER = logging.getLogger(__name__)
 
 
 def parse_apidocs_json(docs_url, html_filename):

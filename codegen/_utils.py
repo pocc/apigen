@@ -22,7 +22,7 @@ import re
 
 import codegen
 
-LOGGER = logging.getLogger()
+LOGGER = logging.getLogger(__name__)
 
 
 class GithubIssues:

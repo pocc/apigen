@@ -68,9 +68,18 @@ import codegen.make_api_client
 LOGGER = logging.getLogger()
 
 
-def get_cli_args():
-    """CLI entry point"""
-    args = docopt.docopt(__doc__)
+def get_cli_args(args=None):
+    """CLI entry point
+
+    Args:
+        args (list): List of system args for unit tests.
+    """
+    if not args:
+        args = docopt.docopt(__doc__)
+    set_log_level(args)
+    log_msg = "`docopt` ARGS >\n" + str(args)
+    LOGGER.debug(log_msg)
+
     check_java_version()
 
     if args['--lang'] or args['--spec']:
@@ -78,12 +87,11 @@ def get_cli_args():
             os.makedirs('generated_clients')
         args = correct_fuzzy_args(args)
         verify_valid_specs(args['--spec'])
-        set_log_level(args)
 
         return args['--spec'], args['--lang'], args['--options']
 
     parse_cli_args(args)
-    sys.exit()
+    return None
 
 
 def check_java_version():
@@ -193,5 +201,3 @@ def parse_cli_args(args):
         print(count)
     else:
         print("ERROR: Specify at least one language or spec.")
-
-    sys.exit()

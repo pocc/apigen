@@ -21,7 +21,7 @@ import codegen._cache as cache
 import codegen._hardcoded as hardcoded
 import codegen._utils as utils
 
-LOGGER = logging.getLogger()
+LOGGER = logging.getLogger(__name__)
 
 
 class OpenApiGenerator:

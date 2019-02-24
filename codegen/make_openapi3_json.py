@@ -36,6 +36,7 @@ Example generated JSON:
 [2] Via `get_apicall_dict`
 """
 import json
+import os
 import re
 import shutil
 import webbrowser
@@ -71,7 +72,7 @@ def make_spec(save_locally):
     openapi_json_text = json.dumps(all_openapi_dict, indent=2, sort_keys=True)
     generated_filepath = save_openapi_json(openapi_json_text, save_locally)
 
-    return generated_filepath
+    return os.getcwd() + '/' + generated_filepath
 
 
 def generate_path_dicts(api_docs):
