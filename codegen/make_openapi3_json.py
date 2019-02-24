@@ -47,7 +47,7 @@ import codegen._cache as cache
 import codegen._hardcoded
 import codegen._utils as utils
 import codegen._vars as _vars
-import codegen._web as web
+import codegen._parse_html as web
 
 
 def make_spec(save_locally):

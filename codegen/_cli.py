@@ -17,11 +17,13 @@
 USAGE:
     mad-codegen [--lang <lang>...] [--spec <spec>...]
         [--options <options>] [--verbose | --verbosity <level>]
+    mad-codegen --count
     mad-codegen --show-generators
     mad-codegen --help
     mad-codegen --version
 
 OPTIONS:
+  -c, --count               Print the number of API calls that exist now.
   -g, --show-generators     Show available languages on this system.
   -h, --help                Show this help dialog.
   -l, --lang <lang>         Generate $language API client. Can be
@@ -59,6 +61,8 @@ import sys
 import docopt
 
 import codegen
+import codegen._hardcoded
+import codegen._parse_html as parse_html
 import codegen.make_api_client
 
 LOGGER = logging.getLogger()
@@ -176,6 +180,17 @@ def parse_cli_args(args):
         openapi_obj = codegen.make_api_client.OpenApiGenerator()
         generator_lists = openapi_obj.get_avail_generators()
         print(generator_lists)
+    elif args['--count']:
+        docs_url = codegen._hardcoded.MERAKI_API_DOCS_LINK
+        apidocs = parse_html.parse_apidocs_json(docs_url, 'meraki_api.html')
+        count = 0
+        for section in apidocs:
+            for path in apidocs[section]:
+                if 'path' in path and path['path']:
+                    count += 1
+                if 'alternate_path' in path and path['alternate_path']:
+                    count += 1
+        print(count)
     else:
         print("ERROR: Specify at least one language or spec.")
 

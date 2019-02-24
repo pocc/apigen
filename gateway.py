@@ -14,6 +14,6 @@
 # limitations under the License.
 """A journey of a thousand miles begins with a hop through your gateway.
 Provides an entry point for MAD-CodeGen."""
-from codegen.codegen_main import main
+from codegen.__main__ import main
 
 main()

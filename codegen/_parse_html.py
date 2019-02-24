@@ -25,7 +25,14 @@ LOGGER = logging.getLogger()
 
 def parse_apidocs_json(docs_url, html_filename):
     """Get all Meraki API calls from the official docs."""
-    cache.download_file(docs_url, html_filename)
+    try:
+        cache.download_file(docs_url, html_filename)
+    except ConnectionError:
+        LOGGER.warning("Not connected to the internet. "
+                       "Using potentially stale API Docs source.")
+        with open('../assets/meraki_api.json') as file_obj:
+            return json.loads(file_obj.read())
+
     api_json_name = 'meraki_api.json'
 
     if cache.is_file_cached(api_json_name):
@@ -39,5 +46,3 @@ def parse_apidocs_json(docs_url, html_filename):
         cache.cache_file(api_json_name, json.dumps(api_docs, indent=2))
 
     return api_docs
-
-
